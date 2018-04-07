@@ -30,8 +30,15 @@ header{
 	background: #1c3144;
 	color: #f2f2f2;
 	font-size: 2rem;
-	padding: .5rem;
 	position: relative;
+}
+
+header h1{
+	line-height: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	margin: 0;
+	padding: 0.5rem;
 }
 
 header nav{
@@ -39,6 +46,13 @@ header nav{
 	bottom: 0;
 	right: 0rem;
 }
+
+@media screen and (max-width: 499px) {
+	header nav{
+		position: static;
+	}
+}
+
 
 header nav ul{
 	padding: 0;
@@ -176,6 +190,15 @@ canvas{
 
 #list-table tr:hover td{
 	background: #c9d0d8;
+}
+
+@media screen and (max-width: 499px) {
+	#list-table th:nth-child(1){
+		display: none;
+	}
+	#list-table td:nth-child(1){
+		display: none;
+	}
 }
 
 #list-table td:nth-child(4){
