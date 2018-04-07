@@ -15,6 +15,9 @@ $(function(){
 		}
 	});
 
+	$('section').hide();
+	$('section.dashboard').show()
+
 	$('nav ul li').on('click', function(){
 		$('section').hide();
 		$('section.' + $(this).data('to')).show();
