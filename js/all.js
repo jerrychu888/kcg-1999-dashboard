@@ -59,6 +59,9 @@ function load(day, cb){
 
 	$.getJSON(API_URL + '?date=' + day, function(res){
 		var maxWorkDistrct = 0;
+		var workAchiveCount = 0;
+		var workAchiveProCount = 0;
+
 		$('#list-table').find('tbody').html('')
 		$('#count-today').find('.work-count').text(~~res.length);
 		for(var i=0;i<res.length;i++){
@@ -92,8 +95,13 @@ function load(day, cb){
 				'<td>' + desc + '</td>' +
 				'<td>' + moment(event.cre_Date).format('HH:mm') + '</td>' +
 				'</tr>'
-			)
+			);
+
+			if(~~event.status === 4) workAchiveCount++;
+			if(~~event.status === 5) workAchiveProCount++;
 		}
+		$('#count-achivement').find('.work-count').text(Math.floor(100 * workAchiveCount / res.length) + '%');
+		$('#count-achivement-pro').find('.work-count').text(Math.floor(100 * workAchiveProCount / res.length) + '%');
 		Object.keys(works).forEach(function(w){
 			if($('#' + w).find('canvas').length){
 				$('#' + w).find('.work-count').text(works[w].total || 0);
