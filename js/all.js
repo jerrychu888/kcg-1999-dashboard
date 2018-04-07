@@ -1,4 +1,4 @@
-var API_URL = 'http://proxy.g0v.ronny.tw/proxy.php?url=https://solhistory.kcg.gov.tw/his-open1999/api/case';
+var API_URL = 'https://proxy.g0v.ronny.tw/proxy.php?url=https://solhistory.kcg.gov.tw/his-open1999/api/case';
 
 var works = {};
 var works_time = {};
