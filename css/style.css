@@ -217,6 +217,7 @@ canvas{
 		border-left-style: solid;
 		border-left-width: 5px;
 		padding-left: .5rem;
+		white-space: normal;
 	}
 	#list-table td:nth-child(5){
 		text-align: center;
