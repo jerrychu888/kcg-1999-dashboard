@@ -1,0 +1,194 @@
+body{
+	font-family: "Noto Sans TC", sans-serif;
+	background: #A2AEBB;
+}
+
+.unstyled::-webkit-inner-spin-button,
+.unstyled::-webkit-calendar-picker-indicator {
+    -webkit-appearance: none;
+}
+
+#loading{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 99;
+	background: rgba(20, 20, 20, 0.8);
+	text-align: center;
+}
+
+#loading-spinner{
+	color: #f2f2f2;
+	z-index: 100;
+	margin-top: calc(50vh - 80px);
+}
+
+header{
+	font-family: "Rounded Mplus 1c";
+	background: #1c3144;
+	color: #f2f2f2;
+	font-size: 2rem;
+	padding: .5rem;
+	position: relative;
+}
+
+header nav{
+	position: absolute;
+	bottom: 0;
+	right: 0rem;
+}
+
+header nav ul{
+	padding: 0;
+	margin: 0;
+	text-indent: 0;
+}
+
+header nav ul li{
+	padding: .5rem 1rem;
+	margin: 0;
+	display: inline-block;
+	cursor: pointer;
+}
+
+header nav ul li:hover{
+	background: #777;
+}
+
+header nav ul li.active{
+	background: #fff;
+	color: #1c3144;
+}
+
+.date{
+	font-family: "Rounded Mplus 1c";
+	padding-left: 1rem;
+	color: #333;
+	font-size: 1.5rem;
+	margin-top: 1rem;
+	text-align: right;
+}
+
+#day{
+	/* position: absolute;
+	right: 0;
+	top: .5rem; */
+	width: 200px;
+	background: transparent;
+	border: 0;
+	outline: 0;
+}
+
+.dashboard{
+	display: grid;
+	padding: 1rem;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: 20px 10px;
+}
+
+#count-today{
+	background: #73a8d5;
+}
+
+#count-districts{
+	grid-row: span 2;
+}
+
+@media screen and (max-width: 1500px) {
+	.dashboard{
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 1070px) {
+	.dashboard{
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 820px) {
+	.dashboard{
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 580px) {
+	.dashboard{
+		grid-template-columns: 1fr;
+	}
+}
+
+.card, .work{
+	background: #f2f2f2;
+	border-radius: 5px;
+	padding: 1rem;
+	position: relative;
+}
+
+.work:hover{
+	background: #fff;
+}
+
+.work-title{
+	/* font-family: 'Rounded Mplus 1c'; */
+	font-size: 1.2rem;
+}
+
+.work-count{
+	position: absolute;
+	top: .5rem;
+	right: .5rem;
+	font-size: 3rem;
+}
+
+canvas{
+	margin-top: 1rem;
+	width: 100%;
+}
+
+#map{
+	width: 100%;
+	height: 400px;
+}
+
+#list-table{
+	width: 95%;
+	padding: 1rem;
+	margin: 0 auto;
+	border-collapse: seperate;
+	border-spacing: 0 .5rem;
+}
+
+#list-table th{
+	font-size: 1rem;
+	padding-left: 1rem;
+	white-space: nowrap;
+	text-align: left;
+}
+
+#list-table td{
+	white-space: nowrap;
+	background: #b6bfc9;
+	padding: 1rem;
+}
+
+#list-table tr:hover td{
+	background: #c9d0d8;
+}
+
+#list-table td:nth-child(4){
+	word-wrap: break-word;
+	max-width: 700px;
+	letter-spacing: .5px;
+	overflow-wrap: break-work;
+	white-space: normal;
+}
+
+.list-table-color{
+	content: ' ';
+	width: 5px;
+	height: 1rem;
+	display: inline-block;
+}
