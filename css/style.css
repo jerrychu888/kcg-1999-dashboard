@@ -192,12 +192,34 @@ canvas{
 	background: #c9d0d8;
 }
 
+#list-table td:nth-child(2){
+	border-left-style: none;
+	border-left-width: 0
+}
+
 @media screen and (max-width: 499px) {
+	#list-table{
+		width: 100%;
+		margin: 0;
+		padding: 0;
+	}
+
+	#list-table td{
+		padding: .5rem 0;
+	}
 	#list-table th:nth-child(1){
 		display: none;
 	}
 	#list-table td:nth-child(1){
 		display: none;
+	}
+	#list-table td:nth-child(2){
+		border-left-style: solid;
+		border-left-width: 5px;
+		padding-left: .5rem;
+	}
+	#list-table td:nth-child(5){
+		text-align: center;
 	}
 }
 

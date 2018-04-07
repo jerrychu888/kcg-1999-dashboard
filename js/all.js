@@ -45,7 +45,6 @@ function initMap(){
 }
 
 function load(day, cb){
-	console.log('load');
 	works_time = {};
 	$('#loading').show();
 	$('.work').each(function(){
@@ -62,9 +61,7 @@ function load(day, cb){
 		var maxWorkDistrct = 0;
 		$('#list-table').find('tbody').html('')
 		$('#count-today').find('.work-count').text(~~res.length);
-		console.log(res.length)
 		for(var i=0;i<res.length;i++){
-			console.log('for')
 			var event = res[i];
 
 			var work = getCategoryByName(event.informDesc);
@@ -90,7 +87,7 @@ function load(day, cb){
 			$($('#list-table').find('tbody')[0]).append(
 				'<tr>'+
 				'<td style="border-left: 5px solid '+ color +'">' + event.fileNo + '</td>' +
-				'<td>' + event.unitName + '</td>' +
+				'<td style="border-left-color: '+ color +'">' + event.unitName + '</td>' +
 				'<td>' + event.zipName + '</td>' +
 				'<td>' + desc + '</td>' +
 				'<td>' + moment(event.cre_Date).format('HH:mm') + '</td>' +
