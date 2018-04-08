@@ -62,9 +62,9 @@ function initMap(){
 	load(day);
 }
 
-function load(day, cb){
+function load(day, skipLoading = false){
 	works_time = {};
-	$('#loading').show();
+	if(skipLoading !== true) $('#loading').show();
 	$('.work').each(function(){
 		works[$(this).attr('id')] = {};
 		Array.from(charts).forEach(c => {
@@ -101,6 +101,8 @@ function load(day, cb){
 			desc = event.beforeDesc;
 			if(event.afterDesc){
 				desc += '<br><br><div style="padding-left: 1rem"><i class="fas fa-hand-point-right"></i>' + event.afterDesc + '</div>';
+			}else if(~~event.status === 1){
+				desc = '<span style="color: #777">建立案件中......</span>'
 			}
 
 			var scale = chroma.scale(['#B71C1C', '#9CCC65']);
@@ -175,8 +177,6 @@ function load(day, cb){
 
 		$('#loading').hide();
 	});
-
-	if(cb && {}.toString.call(cb) === '[object Function]') cb();
 }
 
 function generateChart(ctx, dataLine){
