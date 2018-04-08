@@ -135,7 +135,7 @@ function load(day, skipLoading = false){
 		}
 		$('#count-achivement').find('.work-count').text(Math.floor((100 * workAchiveCount / res.length) || 0) + '%');
 		$('#count-achivement-pro').find('.work-count').text(Math.floor((100 * workAchiveProCount / res.length) || 0) + '%');
-		$('#count-achivement-time-pro').find('.work-count').text(moment.duration(workAchiveProTime / workAchiveProCount).locale('zh-tw').humanize())
+		$('#count-achivement-time-pro').find('.work-count').text(moment.duration((workAchiveProTime / workAchiveProCount) || 0).locale('zh-tw').humanize())
 		var scale = chroma.scale(['#B71C1C', '#9CCC65']);
 		$('#count-achivement').css('background', scale(workAchiveCount / res.length).hex());
 		$('#count-achivement-pro').css('background', scale(workAchiveProCount / res.length).hex());
