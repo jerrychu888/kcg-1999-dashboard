@@ -20,12 +20,30 @@ $(function(){
 	});
 
 	$('section').hide();
-	$('section.dashboard').show()
+	$('section.dashboard').show().animateCss('fadeIn');
 
 	$('nav ul li').on('click', function(){
 		$('section').hide();
-		$('section.' + $(this).data('to')).show();
+		$('section.' + $(this).data('to')).show().animateCss('fadeIn');
 		$(this).addClass('active').siblings().removeClass('active');
+	});
+
+	$('#yesterday').on('click', function(){
+		var day = moment($('#day').val()).add(-1, 'days').format('YYYY-MM-DD')
+		$('#day').val(day);
+		load(day);
+	});
+
+	$('#tomorrow').on('click', function(){
+		var day = moment($('#day').val()).add(1, 'days').format('YYYY-MM-DD');
+		$('#day').val(day);
+		load(day);
+	});
+
+	$('#today').on('click', function(){
+		var day = moment(new Date()).format('YYYY-MM-DD');
+		$('#day').val(day);
+		load(day);
 	});
 });
 
@@ -61,6 +79,7 @@ function load(day, cb){
 		var maxWorkDistrct = 0;
 		var workAchiveCount = 0;
 		var workAchiveProCount = 0;
+		var workAchiveProTime = 0;
 
 		$('#list-table').find('tbody').html('')
 		$('#count-today').find('.work-count').text(~~res.length);
@@ -97,11 +116,19 @@ function load(day, cb){
 				'</tr>'
 			);
 
-			if(~~event.status === 4) workAchiveCount++;
-			if(~~event.status === 5) workAchiveProCount++;
+			if(~~event.status >= 4) workAchiveCount++;
+			if(~~event.status === 5){
+				workAchiveProCount++;
+				workAchiveProTime += new Date(event.close_Date) - new Date(event.cre_Date);
+			}
 		}
-		$('#count-achivement').find('.work-count').text(Math.floor(100 * workAchiveCount / res.length) + '%');
-		$('#count-achivement-pro').find('.work-count').text(Math.floor(100 * workAchiveProCount / res.length) + '%');
+		$('#count-achivement').find('.work-count').text(Math.floor((100 * workAchiveCount / res.length) || 0) + '%');
+		$('#count-achivement-pro').find('.work-count').text(Math.floor((100 * workAchiveProCount / res.length) || 0) + '%');
+		$('#count-achivement-time-pro').find('.work-count').text(moment.duration(workAchiveProTime / workAchiveProCount).locale('zh-tw').humanize())
+		var scale = chroma.scale(['#B71C1C', '#9CCC65']);
+		$('#count-achivement').css('background', scale(workAchiveCount / res.length).hex());
+		$('#count-achivement-pro').css('background', scale(workAchiveProCount / res.length).hex());
+
 		Object.keys(works).forEach(function(w){
 			if($('#' + w).find('canvas').length){
 				$('#' + w).find('.work-count').text(works[w].total || 0);
@@ -308,3 +335,30 @@ function getCategoryByName(name){
 			return 'work-gas'
 	}
 }
+
+$.fn.extend({
+	animateCss: function(animationName, callback) {
+	var animationEnd = (function(el) {
+		var animations = {
+		animation: 'animationend',
+		OAnimation: 'oAnimationEnd',
+		MozAnimation: 'mozAnimationEnd',
+		WebkitAnimation: 'webkitAnimationEnd',
+		};
+
+		for (var t in animations) {
+		if (el.style[t] !== undefined) {
+			return animations[t];
+		}
+		}
+	})(document.createElement('div'));
+
+	this.addClass('animated ' + animationName).one(animationEnd, function() {
+		$(this).removeClass('animated ' + animationName);
+
+		if (typeof callback === 'function') callback();
+	});
+
+	return this;
+	},
+});

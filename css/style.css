@@ -78,11 +78,15 @@ header nav ul li.active{
 
 .date{
 	font-family: "Rounded Mplus 1c";
-	padding-left: 1rem;
+	/* padding-left: 1rem; */
 	color: #333;
 	font-size: 1.5rem;
 	margin-top: 1rem;
 	text-align: right;
+}
+
+.date .dib{
+	cursor: pointer;
 }
 
 #day{
@@ -100,10 +104,6 @@ header nav ul li.active{
 	padding: 1rem;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 	grid-gap: 20px 10px;
-}
-
-#count-today{
-	background: #73a8d5;
 }
 
 #count-districts{
@@ -139,6 +139,10 @@ header nav ul li.active{
 	border-radius: 5px;
 	padding: 1rem;
 	position: relative;
+}
+
+.card-blue{
+	background: #73a8d5;
 }
 
 .work:hover{
@@ -254,4 +258,8 @@ footer{
 	margin-top: 1rem;
 	padding: 1rem;
 	line-height: 1.5rem;
+}
+
+.dib{
+	display: inline-block;
 }
