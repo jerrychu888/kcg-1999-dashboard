@@ -64,7 +64,16 @@ function initMap(){
 
 function load(day, skipLoading = false){
 	works_time = {};
-	if(skipLoading !== true) $('#loading').show();
+	if(skipLoading !== true){
+		$('#loading').show();
+	}else{
+		console.log(moment(new Date).format('YYYY-MM-DD') ===
+		moment($('#day').val()).format('YYYY-MM-DD'));
+		if(
+			moment(new Date).format('YYYY-MM-DD') !==
+			moment($('#day').val()).format('YYYY-MM-DD')
+		) return;
+	}
 	$('.work').each(function(){
 		works[$(this).attr('id')] = {};
 		Array.from(charts).forEach(c => {
@@ -362,3 +371,7 @@ $.fn.extend({
 	return this;
 	},
 });
+
+setInterval(function(){
+	load(moment(new Date).format('YYYY-MM-DD'), true);
+}, 30000);
