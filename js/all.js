@@ -8,7 +8,7 @@ var works = {};
 var works_time = {};
 var works_district = [];
 var charts = [];
-var map;
+var mapSmall;
 var districts = ["楠梓區", "左營區", "鼓山區", "三民區", "鹽埕區", "前金區", "新興區", "苓雅區", "前鎮區", "旗津區", "小港區", "鳳山區", "大寮區", "鳥松區", "林園區", "仁武區", "大樹區", "大社區", "岡山區", "路竹區", "橋頭區", "梓官區", "彌陀區", "永安區", "燕巢區", "田寮區", "阿蓮區", "茄萣區", "湖內區", "旗山區", "美濃區", "內門區", "杉林區", "甲仙區", "六龜區", "茂林區", "桃源區", "那瑪夏區"];
 
 $(function(){
@@ -48,13 +48,13 @@ $(function(){
 });
 
 function initMap(){
-	map = new google.maps.Map(document.getElementById('map'), {
+	mapSmall = new google.maps.Map(document.getElementById('map_small'), {
 		center: {lng: 120.5786888, lat: 22.9185024},
 		zoom: 9,
 		styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#0066ff"},{"saturation":74},{"lightness":100}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"off"},{"weight":0.6},{"saturation":-85},{"lightness":61}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"color":"#5f94ff"},{"lightness":26},{"gamma":5.86}]}],
 		disableDefaultUI: true
 	});
-	map.data.loadGeoJson('./data/kaohsiung.json');
+	mapSmall.data.loadGeoJson('./data/kaohsiung.json');
 
 	var day = moment(new Date()).format('YYYY-MM-DD');
 	$('#day').val(day);
@@ -67,8 +67,6 @@ function load(day, skipLoading = false){
 	if(skipLoading !== true){
 		$('#loading').show();
 	}else{
-		console.log(moment(new Date).format('YYYY-MM-DD') ===
-		moment($('#day').val()).format('YYYY-MM-DD'));
 		if(
 			moment(new Date).format('YYYY-MM-DD') !==
 			moment($('#day').val()).format('YYYY-MM-DD')
@@ -110,7 +108,7 @@ function load(day, skipLoading = false){
 			desc = event.beforeDesc;
 			if(event.afterDesc){
 				desc += '<br><br><div style="padding-left: 1rem"><i class="fas fa-hand-point-right"></i>' + event.afterDesc + '</div>';
-			}else if(~~event.status === 1){
+			}else if(~~event.status === 1 && event.beforeDesc.trim() === ''){
 				desc = '<span style="color: #777">建立案件中......</span>'
 			}
 
@@ -167,7 +165,7 @@ function load(day, skipLoading = false){
 		}
 		generateChart($('#count-today').find('canvas'), countToday);
 
-		map.data.setStyle(function(feature){
+		mapSmall.data.setStyle(function(feature){
 			var name = feature.f.T_Name;
 			var count = works_district[districts.indexOf(name)];
 
