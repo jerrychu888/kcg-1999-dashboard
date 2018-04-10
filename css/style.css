@@ -268,3 +268,32 @@ footer{
 	width: 100%;
 	height: calc(100vh - 8rem);
 }
+
+#go-top{
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+	width: 2rem;
+	height: 2rem;
+	line-height: 2rem;
+	text-align: center;
+	font-size: 2rem;
+	padding: 1rem;
+	background: rgba(240, 240, 240, 0.8);
+	border-radius: 50%;
+	box-shadow: 1px 1px 4px 2px #777;
+	color: #333;
+	cursor: pointer;
+	display: none;
+}
+
+#go-top:hover{
+	background: #FF4500;
+	transition: .2s ease-in all;
+	color: #f2f2f2;
+}
+
+#go-top:hover .hand{
+	transition: .1s ease-in all;
+	transform: translateY(-.3rem);
+}

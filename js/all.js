@@ -45,6 +45,23 @@ $(function(){
 		$('#day').val(day);
 		load(day);
 	});
+
+	$(document).scroll(function() {
+		if ($(this).scrollTop() > $(window).height()) {
+		  $('#go-top').fadeIn();
+		} else {
+		  $('#go-top').fadeOut(1000);
+		}
+	});
+
+	$('#go-top').on('click', function(){
+		$("html, body").animate({
+			scrollTop: 0
+		}, {
+			duration: 500,
+			easing: "swing"
+		});
+	});
 });
 
 function initMap(){
