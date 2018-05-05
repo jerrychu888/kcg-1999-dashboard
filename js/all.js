@@ -132,6 +132,7 @@ function load(day, skipLoading = false){
 					draggable: false,
 					map: map,
 					fileNo: event.fileNo,
+					type: work,
 				});
 				marker.addListener('click', function(){
 					$('nav ul li').get(1).click();
@@ -170,7 +171,7 @@ function load(day, skipLoading = false){
 			var color = scale(~~event.status / 5).hex();
 
 			$($('#list-table').find('tbody')[0]).append(
-				'<tr>'+
+				'<tr data-type="' + work + '">'+
 				'<td style="border-left: 5px solid '+ color +'">' + event.fileNo + '</td>' +
 				'<td style="border-left-color: '+ color +'">' + event.unitName + '</td>' +
 				'<td>' + event.zipName + '</td>' +
@@ -256,6 +257,36 @@ function load(day, skipLoading = false){
 	});
 }
 
+$('.map-filter').on('click', function(){
+	$(this).addClass('active').siblings().removeClass('active');
+	if(markerEvent.length){
+		if($(this).data('filter') !== 'all'){
+			markerEvent.forEach(function(m){
+				m.setMap(null);
+			});
+			var filter = $(this).data('filter');
+			markerEvent.filter(function(x){return x.type === filter}).forEach(function(m){
+				m.setMap(map);
+			});
+		}else{
+			markerEvent.forEach(function(m){
+				m.setMap(map);
+			});
+		}
+	}
+});
+
+$('.list-filter').on('click', function(){
+	$(this).addClass('active').siblings().removeClass('active');
+	if($(this).data('filter') !== 'all'){
+		var filter = $(this).data('filter');
+		$('#list-table').find('tr').hide();
+		$('#list-table').find('tr').filter(function(){return $(this).data('type') === filter;}).show();
+	}else{
+		$('#list-table').find('tr').show();
+	}
+})
+
 function generateChart(ctx, dataLine){
 	var chart = new Chart(ctx, {
 		type: 'line',
@@ -301,66 +332,67 @@ function generateChart(ctx, dataLine){
 }
 
 function loadYesterday(day){
-	console.log('loading yesterday')
 	var day = moment(day).add(-1, 'day').format('YYYY-MM-DD');
 	var works_yesterday = {};
 	var works_time_yesterday = {};
 
 	$.getJSON(API_URL + '?date=' + day, function(res){
-		var maxWorkDistrct = 0;
-		var workAchiveCount = 0;
-		var workAchiveProCount = 0;
-		var workAchiveProTime = 0;
+		if(res.length){
+			var maxWorkDistrct = 0;
+			var workAchiveCount = 0;
+			var workAchiveProCount = 0;
+			var workAchiveProTime = 0;
 
-		for(var i=0;i<res.length;i++){
-			var event = res[i];
+			for(var i=0;i<res.length;i++){
+				var event = res[i];
 
-			var work = getCategoryByName(event.informDesc);
+				var work = getCategoryByName(event.informDesc);
 
-			if(!works_yesterday[work]) works_yesterday[work] = {};
-			if(!works_time_yesterday[hour]) works_time_yesterday[hour] = {};
+				if(!works_yesterday[work]) works_yesterday[work] = {};
+				if(!works_time_yesterday[hour]) works_time_yesterday[hour] = {};
 
-			var hour = new Date(event.cre_Date).getHours();
+				var hour = new Date(event.cre_Date).getHours();
 
-			works_yesterday[work].total = !isNaN(works_yesterday[work].total) ? works_yesterday[work].total+1 : 1;
-			works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
-			works_time_yesterday[hour] = !isNaN(works_time_yesterday[hour]) ? works_time_yesterday[hour] + 1 : 1;
-
-			if(~~event.status >= 4) workAchiveCount++;
-			if(~~event.status === 5){
-				workAchiveProCount++;
-				workAchiveProTime += new Date(event.close_Date) - new Date(event.cre_Date);
-			}
-		}
-		// console.log(works)
-		works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
-		Object.keys(works).forEach(function(w){
-			if(!works_yesterday[w]) works_yesterday[w] = {total: 0};
-		});
-		Object.keys(works_yesterday).forEach(function(w){
-				var count = 0;
-				for(var i=0;i<=new Date().getHours();i++){
+				works_yesterday[work].total = !isNaN(works_yesterday[work].total) ? works_yesterday[work].total+1 : 1;
 				works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
-				if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
+				works_time_yesterday[hour] = !isNaN(works_time_yesterday[hour]) ? works_time_yesterday[hour] + 1 : 1;
+
+				if(~~event.status >= 4) workAchiveCount++;
+				if(~~event.status === 5){
+					workAchiveProCount++;
+					workAchiveProTime += new Date(event.close_Date) - new Date(event.cre_Date);
+				}
 			}
-			if(!isNaN(Number($('#' + w).find('.work-count').text()))){
+			// console.log(works)
+			works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+			Object.keys(works).forEach(function(w){
+				if(!works_yesterday[w]) works_yesterday[w] = {total: 0};
+			});
+			Object.keys(works_yesterday).forEach(function(w){
+					var count = 0;
+					for(var i=0;i<=new Date().getHours();i++){
+					works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+					if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
+				}
+				if(!isNaN(Number($('#' + w).find('.work-count').text()))){
+					var now = Number($('#' + w).find('.work-count').text());
+					var a = now - count;
+					var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
+					$('#' + w).find('.yesterday-count').text(text);
+					$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
+				}
 				var now = Number($('#' + w).find('.work-count').text());
 				var a = now - count;
 				var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
 				$('#' + w).find('.yesterday-count').text(text);
 				$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
-			}
-			var now = Number($('#' + w).find('.work-count').text());
-			var a = now - count;
-			var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
-			$('#' + w).find('.yesterday-count').text(text);
-			$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
-		});
-		var now = Number($('#count-today').find('.work-count').text());
-		var a = now - res.length;
-		var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / res.length) + '%)'
-		$('#count-today').find('.yesterday-count').text(text);
-		$('#count-today').find('.yesterday-desc').text('和前一天此時相比');
+			});
+			var now = Number($('#count-today').find('.work-count').text());
+			var a = now - res.length;
+			var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / res.length) + '%)'
+			$('#count-today').find('.yesterday-count').text(text);
+			$('#count-today').find('.yesterday-desc').text('和前一天此時相比');
+		}
 	});
 }
 
@@ -387,7 +419,7 @@ function getIconpathByWork(work){
 			iconpath += 'seedling.svg'; break;
 		case 'work-water':
 			iconpath += 'bath.svg'; break;
-		case 'work-electrivity':
+		case 'work-electricity':
 			iconpath += 'bolt.svg'; break;
 		case 'work-gas':
 			iconpath += 'industry.svg'; break;

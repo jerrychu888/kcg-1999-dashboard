@@ -12,6 +12,10 @@ body{
 	max-width: 100% !important;
 }
 
+section{
+	min-height: calc(100vh - 15.5rem);
+}
+
 #loading{
 	position: fixed;
 	top: 0;
@@ -288,6 +292,39 @@ footer{
 #map{
 	width: 100%;
 	height: calc(100vh - 8rem);
+}
+
+.map-filter-container{
+	position: absolute;
+	left: 7rem;
+	top: 8.2rem;
+}
+
+.list-filter-container{
+	text-align: center;
+	margin: .5rem auto;
+}
+
+.map-filter, .list-filter{
+	background: #fff;
+	/* width: 10px; */
+	height: 10px;
+	padding: .7rem .5rem;
+	border-right: 1px solid #ccc;
+	margin: 0;
+	line-height: .7rem;
+	font-size: .7rem;
+	display: inline-block;
+	color: #565656;
+	cursor: pointer;
+}
+
+.map-filter:hover, .list-filter:hover{
+	background: #f2f2f2;
+}
+
+.map-filter.active, .list-filter.active{
+	background: #ccc;
 }
 
 #go-top{
