@@ -35,7 +35,7 @@
 		<div class="dib" id="today">
 			<i class="fas fa-calendar"></i>
 		</div>
-		<input class="unstyled" type="date" id="day"/>
+		<input class="unstyled" type="date" id="day" placeholder="2018-05-21"/>
 		<div class="dib" id="tomorrow">
 			<i class="fas fa-angle-double-right"></i>
 		</div>
@@ -43,62 +43,110 @@
 	<section class="dashboard">
 		<div class="work" id="work-road">
 			<div class="work-title"><i class="fas fa-road"></i> 道路不平</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<div class="work-count">0</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-pipe">
 			<div class="work-title"><i class="fas fa-tint"></i> 積水、汙水管</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-light">
 			<div class="work-title"><i class="fas fa-lightbulb"></i> 路燈故障</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-park">
 			<div class="work-title"><i class="fas fa-tree"></i> 公園、路樹、人行道</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-traffic">
 			<div class="work-title"><i class="fas fa-sign"></i> 交通號誌</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-car">
 			<div class="work-title"><i class="fas fa-car"></i> 交通違規、路霸</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-noise">
 			<div class="work-title"><i class="fas fa-bullhorn"></i> 髒亂、噪音、空汙</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-animal">
 			<div class="work-title"><i class="fas fa-paw"></i> 動物保護</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-view">
 			<div class="work-title"><i class="fas fa-seedling"></i> 風景區維護</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-water">
 			<div class="work-title"><i class="fas fa-bath"></i> 自來水相關</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-electricity">
 			<div class="work-title"><i class="fas fa-bolt"></i> 電力相關</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="work" id="work-gas">
 			<div class="work-title"><i class="fas fa-industry"></i> 不明氣體外洩</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="card" id="count-districts">
@@ -108,6 +156,10 @@
 		<div class="card card-blue" id="count-today">
 			<div class="work-title"><i class="fas fa-calendar-alt"></i> 今日受理案件</div>
 			<div class="work-count">0</div>
+			<div class="yesterday">
+				<div class="yesterday-count">△ +0(+0%)</div>
+				<div class="yesterday-desc">和前一天此時相比</div>
+			</div>
 			<canvas></canvas>
 		</div>
 		<div class="card" id="count-achivement">

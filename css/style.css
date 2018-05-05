@@ -8,6 +8,10 @@ body{
     -webkit-appearance: none;
 }
 
+.chartjs-render-monitor{
+	max-width: 100% !important;
+}
+
 #loading{
 	position: fixed;
 	top: 0;
@@ -171,6 +175,23 @@ header nav ul li.active{
 canvas{
 	margin-top: 1rem;
 	width: 100%;
+}
+
+.yesterday{
+	margin-top: 5px;
+	margin-bottom: -5px;
+	color: #454545;
+	font-size: .8rem;
+}
+
+.yesterday-count{
+	display: inline-block;
+}
+
+.yesterday-desc{
+	color: #787878;
+	display: inline-block;
+	font-size: .5rem;
 }
 
 #map_small{

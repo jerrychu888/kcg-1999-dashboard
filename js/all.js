@@ -191,7 +191,6 @@ function load(day, skipLoading = false){
 		var scale = chroma.scale(['#B71C1C', '#9CCC65']);
 		$('#count-achivement').css('background', scale(workAchiveCount / res.length).hex());
 		$('#count-achivement-pro').css('background', scale(workAchiveProCount / res.length).hex());
-
 		Object.keys(works).forEach(function(w){
 			if($('#' + w).find('canvas').length){
 				$('#' + w).find('.work-count').text(works[w].total || 0);
@@ -253,6 +252,7 @@ function load(day, skipLoading = false){
 		});
 
 		$('#loading').hide();
+		loadYesterday(day);
 	});
 }
 
@@ -298,6 +298,70 @@ function generateChart(ctx, dataLine){
 		}
 	});
 	charts.push(chart);
+}
+
+function loadYesterday(day){
+	console.log('loading yesterday')
+	var day = moment(day).add(-1, 'day').format('YYYY-MM-DD');
+	var works_yesterday = {};
+	var works_time_yesterday = {};
+
+	$.getJSON(API_URL + '?date=' + day, function(res){
+		var maxWorkDistrct = 0;
+		var workAchiveCount = 0;
+		var workAchiveProCount = 0;
+		var workAchiveProTime = 0;
+
+		for(var i=0;i<res.length;i++){
+			var event = res[i];
+
+			var work = getCategoryByName(event.informDesc);
+
+			if(!works_yesterday[work]) works_yesterday[work] = {};
+			if(!works_time_yesterday[hour]) works_time_yesterday[hour] = {};
+
+			var hour = new Date(event.cre_Date).getHours();
+
+			works_yesterday[work].total = !isNaN(works_yesterday[work].total) ? works_yesterday[work].total+1 : 1;
+			works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+			works_time_yesterday[hour] = !isNaN(works_time_yesterday[hour]) ? works_time_yesterday[hour] + 1 : 1;
+
+			if(~~event.status >= 4) workAchiveCount++;
+			if(~~event.status === 5){
+				workAchiveProCount++;
+				workAchiveProTime += new Date(event.close_Date) - new Date(event.cre_Date);
+			}
+		}
+		// console.log(works)
+		works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+		Object.keys(works).forEach(function(w){
+			if(!works_yesterday[w]) works_yesterday[w] = {total: 0};
+		});
+		Object.keys(works_yesterday).forEach(function(w){
+				var count = 0;
+				for(var i=0;i<=new Date().getHours();i++){
+				works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+				if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
+			}
+			if(!isNaN(Number($('#' + w).find('.work-count').text()))){
+				var now = Number($('#' + w).find('.work-count').text());
+				var a = now - count;
+				var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
+				$('#' + w).find('.yesterday-count').text(text);
+				$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
+			}
+			var now = Number($('#' + w).find('.work-count').text());
+			var a = now - count;
+			var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
+			$('#' + w).find('.yesterday-count').text(text);
+			$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
+		});
+		var now = Number($('#count-today').find('.work-count').text());
+		var a = now - res.length;
+		var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / res.length) + '%)'
+		$('#count-today').find('.yesterday-count').text(text);
+		$('#count-today').find('.yesterday-desc').text('和前一天此時相比');
+	});
 }
 
 function getIconpathByWork(work){
