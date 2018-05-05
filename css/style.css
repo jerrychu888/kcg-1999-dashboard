@@ -300,6 +300,12 @@ footer{
 	top: 8.2rem;
 }
 
+@media screen and (max-width: 800px) {
+	.map-filter-container{
+		display: none;
+	}
+}
+
 .list-filter-container{
 	text-align: center;
 	margin: .5rem auto;
