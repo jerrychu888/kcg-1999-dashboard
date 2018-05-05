@@ -371,9 +371,9 @@ function loadYesterday(day){
 			Object.keys(works_yesterday).forEach(function(w){
 					var count = 0;
 					for(var i=0;i<=new Date().getHours();i++){
-					works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
-					if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
-				}
+						works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+						if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
+					}
 				if(!isNaN(Number($('#' + w).find('.work-count').text()))){
 					var now = Number($('#' + w).find('.work-count').text());
 					var a = now - count;
