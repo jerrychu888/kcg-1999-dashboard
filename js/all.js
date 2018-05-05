@@ -363,29 +363,30 @@ function loadYesterday(day){
 					workAchiveProTime += new Date(event.close_Date) - new Date(event.cre_Date);
 				}
 			}
-			// console.log(works)
 			works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
 			Object.keys(works).forEach(function(w){
 				if(!works_yesterday[w]) works_yesterday[w] = {total: 0};
 			});
 			Object.keys(works_yesterday).forEach(function(w){
-					var count = 0;
-					for(var i=0;i<=new Date().getHours();i++){
-						works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
-						if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
-					}
+				var count = 0;
+				var hour = new Date().getHours();
+				if(moment(day).add(1, 'days').unix() < moment(new Date().setHours(0, 0, 0, 0)).unix()) hour = 23;
+				for(var i=0;i<=hour;i++){
+					works_yesterday[work][hour] = !isNaN(works_yesterday[work][hour]) ? works_yesterday[work][hour]+1 : 1;
+					if(!isNaN(works_yesterday[w][i])) count += works_yesterday[w][i];
+				}
 				if(!isNaN(Number($('#' + w).find('.work-count').text()))){
 					var now = Number($('#' + w).find('.work-count').text());
 					var a = now - count;
-					var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
+					var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(count > 0 ? (100 * a / count) : (100 * a / 1)) + '%)'
 					$('#' + w).find('.yesterday-count').text(text);
 					$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
 				}
-				var now = Number($('#' + w).find('.work-count').text());
-				var a = now - count;
-				var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
-				$('#' + w).find('.yesterday-count').text(text);
-				$('#' + w).find('.yesterday-desc').text('和前一天此時相比');
+				// var now = Number($('#' + w).find('.work-count').text());
+				// var a = now - count;
+				// var text = (a >= 0 ? '△ +' : '▽ ') + a + '(' + (a >= 0 ? '+' : '') + Math.floor(100 * a / (count || 1)) + '%)'
+				// $('#' + w).find('.yesterday-count').text(text);
+				// $('#' + w).find('.yesterday-desc').text('和前一天此時相比');
 			});
 			var now = Number($('#count-today').find('.work-count').text());
 			var a = now - res.length;
