@@ -11,6 +11,8 @@ var charts = [];
 var map, mapSmall, markerEvent = [];
 var districts = ["楠梓區", "左營區", "鼓山區", "三民區", "鹽埕區", "前金區", "新興區", "苓雅區", "前鎮區", "旗津區", "小港區", "鳳山區", "大寮區", "鳥松區", "林園區", "仁武區", "大樹區", "大社區", "岡山區", "路竹區", "橋頭區", "梓官區", "彌陀區", "永安區", "燕巢區", "田寮區", "阿蓮區", "茄萣區", "湖內區", "旗山區", "美濃區", "內門區", "杉林區", "甲仙區", "六龜區", "茂林區", "桃源區", "那瑪夏區"];
 
+var intervalTimeline;
+
 $(function(){
 	$('#day').on('change', function(){
 		if($(this).val()){
@@ -26,6 +28,8 @@ $(function(){
 		$('section').hide();
 		$('section.' + $(this).data('to')).show().animateCss('fadeIn');
 		$(this).addClass('active').siblings().removeClass('active');
+
+		if($(this).data('to') === 'map') resetTimeline();
 	});
 
 	$('#yesterday').on('click', function(){
@@ -126,12 +130,14 @@ function load(day, skipLoading = false){
 
 			if(event.lat && event.lng){
 				var iconpath = getIconpathByWork(work);
+				var d = new Date(event.cre_Date);
 				var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(event.lat, event.lng),
 					icon: new google.maps.MarkerImage(iconpath, null, null, null, new google.maps.Size(16, 16)),
 					draggable: false,
 					map: map,
 					fileNo: event.fileNo,
+					time: d.getHours() * 60 + d.getMinutes(),
 					type: work,
 				});
 				marker.addListener('click', function(){
@@ -255,6 +261,8 @@ function load(day, skipLoading = false){
 		$('#loading').hide();
 		loadYesterday(day);
 	});
+
+	resetTimeline();
 }
 
 $('.map-filter').on('click', function(){
@@ -285,7 +293,7 @@ $('.list-filter').on('click', function(){
 	}else{
 		$('#list-table').find('tr').show();
 	}
-})
+});
 
 function generateChart(ctx, dataLine){
 	var chart = new Chart(ctx, {
@@ -330,6 +338,68 @@ function generateChart(ctx, dataLine){
 	});
 	charts.push(chart);
 }
+
+function startTimeline(){
+	var speed = ~~$('.timeline-speed').text().slice(0, -1);
+	$('.timeline-play').html('<i class="fas fa-pause" />');
+	if(intervalTimeline) clearInterval(intervalTimeline);
+	intervalTimeline = setInterval(function(){
+		var n = $('.timeline input').val();
+		$('.timeline input').val(~~n + 1);
+		$('.timeline input').change();
+	}, 1000 / speed);
+	$('.timeline-play').off('click');
+	$('.timeline-play').on('click', function(){stopTimeline()});
+}
+
+function stopTimeline(){
+	$('.timeline-play').html('<i class="fas fa-play" />');
+	if(intervalTimeline) clearInterval(intervalTimeline);
+	$('.timeline-play').on('click', function(){startTimeline()});
+}
+
+function resetTimeline(){
+	stopTimeline();
+	$('.timeline input').val(new Date().getHours() * 60 + new Date().getMinutes());
+	$('.timeline-now').text(moment(new Date()).format('HH:mm'));
+}
+
+$('.timeline-play').on('click', function(){startTimeline(1)});
+$('.timeline-fast').on('click', function(){
+	var speed = ~~$('.timeline-speed').text().slice(0, -1);
+	if(speed < 16) speed *= 2;
+	$('.timeline-speed').text(speed + 'x');
+	stopTimeline();
+	startTimeline();
+});
+$('.timeline-slow').on('click', function(){
+	var speed = ~~$('.timeline-speed').text().slice(0, -1);
+	if(speed > 1) speed /= 2;
+	$('.timeline-speed').text(speed + 'x');
+	stopTimeline();
+	startTimeline();
+});
+$('.timeline input').on('change', function(){
+	var range = $(this).val();
+	markerEvent.filter(function(x){
+		return x.time <= range;
+	}).forEach(function(m){
+		if(m.map !== map) m.setMap(map);
+	});
+	markerEvent.filter(function(x){
+		return x.time > range;
+	}).forEach(function(m){
+		m.setMap(null);
+	});
+	var n = $('.timeline input').val();
+	var hh = Math.floor(n / 60);
+	if(hh < 10) hh = '0' + hh;
+	var mm = Math.floor(n % 60);
+	if(mm < 10) mm = '0' + mm;
+
+	$('.timeline input').val(~~n + 1);
+	$('.timeline-now').text(hh + ':' + mm);
+});
 
 function loadYesterday(day){
 	var day = moment(day).add(-1, 'day').format('YYYY-MM-DD');
@@ -572,4 +642,4 @@ $.fn.extend({
 
 setInterval(function(){
 	load(moment(new Date).format('YYYY-MM-DD'), true);
-}, 30000);
+}, 60000);

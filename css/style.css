@@ -361,3 +361,119 @@ footer{
 	transition: .1s ease-in all;
 	transform: translateY(-.3rem);
 }
+
+.timeline{
+	width: 80%;
+	left: 10%;
+	text-align: center;
+	position: absolute;
+	bottom: 2rem;
+	padding: 1rem;
+	background: rgba(240, 240, 240, 0.4);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.timeline input{
+	width: 80%;
+}
+
+.timeline-play, .timeline-fast, .timeline-slow{
+	font-size: 1.5rem;
+	margin: 0 .5rem;
+	cursor: pointer;
+}
+
+.timeline-control div{
+	display: inline-block;
+}
+
+.timeline input[type=range] {
+	-webkit-appearance: none;
+	margin: 10px 0;
+}
+.timeline input[type=range]:focus {
+	outline: none;
+}
+.timeline input[type=range]::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 12.8px;
+	cursor: pointer;
+	animate: 0.2s;
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+	background: #FF2222;
+	border-radius: 25px;
+	border: 0px solid #000101;
+}
+.timeline input[type=range]::-webkit-slider-thumb {
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+	border: 0px solid #000000;
+	height: 20px;
+	width: 39px;
+	border-radius: 7px;
+	background: #65001c;
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin-top: -3.6px;
+}
+.timeline input[type=range]:focus::-webkit-slider-runnable-track {
+	background: #FF2222;
+}
+.timeline input[type=range]::-moz-range-track {
+	width: 100%;
+	height: 12.8px;
+	cursor: pointer;
+	animate: 0.2s;
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+	background: #FF2222;
+	border-radius: 25px;
+	border: 0px solid #000101;
+}
+.timeline input[type=range]::-moz-range-thumb {
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+	border: 0px solid #000000;
+	height: 20px;
+	width: 39px;
+	border-radius: 7px;
+	background: #65001c;
+	cursor: pointer;
+}
+.timeline input[type=range]::-ms-track {
+	width: 100%;
+	height: 12.8px;
+	cursor: pointer;
+	animate: 0.2s;
+	background: transparent;
+	border-color: transparent;
+	border-width: 39px 0;
+	color: transparent;
+}
+.timeline input[type=range]::-ms-fill-lower {
+	background: #FF2222;
+	border: 0px solid #000101;
+	border-radius: 50px;
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+}
+.timeline input[type=range]::-ms-fill-upper {
+	background: #FF2222;
+	border: 0px solid #000101;
+	border-radius: 50px;
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+}
+.timeline input[type=range]::-ms-thumb {
+	box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+	border: 0px solid #000000;
+	height: 20px;
+	width: 39px;
+	border-radius: 7px;
+	background: #65001c;
+	cursor: pointer;
+}
+.timeline input[type=range]:focus::-ms-fill-lower {
+	background: #FF2222;
+}
+.timeline input[type=range]:focus::-ms-fill-upper {
+	background: #FF2222;
+}
