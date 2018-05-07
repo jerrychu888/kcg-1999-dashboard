@@ -225,6 +225,33 @@ function load(day, skipLoading = false){
 		}
 		generateChart($('#count-today').find('canvas'), countToday);
 
+		var chart = new Chart($('#count-donut').find('canvas'), {
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data:
+						Object.keys(works)
+						.filter(function(x){return x !== 'undefined'})
+						.filter(function(x){return works[x].total})
+						.map(function(x){return works[x].total})
+						.sort(function(a, b){return b-a}),
+					backgroundColor: ['#66C2A5', '#FC8D62', '#8Da0cb', '#e78ac3', '#a6d854', '#ffd92f', '#e5c494', '#B3B3B3']
+				}],
+				labels:
+					Object.keys(works)
+					.filter(function(x){return x !== 'undefined'})
+					.filter(function(x){return works[x].total})
+					.sort(function(a, b){return works[b].total - works[a].total})
+					.map(function(x){return getNameByCategory(x)})
+			},
+			options: {
+				legend: {
+					display: false
+				}
+			}
+		});
+		charts.push(chart);
+
 		mapSmall.data.setStyle(function(feature){
 			var name = feature.f.T_Name;
 			var count = works_district[districts.indexOf(name)];
@@ -610,6 +637,23 @@ function getCategoryByName(name){
 		case '欣高-孔蓋鬆動':
 		case '欣高-路面填補不實':
 			return 'work-gas'
+	}
+}
+
+function getNameByCategory(x){
+	switch(x){
+		case 'work-road': return '道路不平';
+		case 'work-pipe': return '積水、汙水管';
+		case 'work-light': return '路燈故障';
+		case 'work-park': return '公園、路樹、人行道';
+		case 'work-traffic': return '交通號誌';
+		case 'work-car': return '交通違規、路霸';
+		case 'work-noise': return '髒亂、噪音、空汙';
+		case 'work-animal': return '動物保護';
+		case 'work-view': '風景區維護';
+		case 'work-water': return '自來水相關';
+		case 'work-electricity': return '電力相關';
+		case 'work-gas': return '不明氣體外洩';
 	}
 }
 
