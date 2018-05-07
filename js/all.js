@@ -30,6 +30,7 @@ $(function(){
 		$(this).addClass('active').siblings().removeClass('active');
 
 		if($(this).data('to') === 'map') resetTimeline();
+		if($(this).data('to') === 'the-streamgraph') chart(column,filterBy,groupBy);
 	});
 
 	$('#yesterday').on('click', function(){

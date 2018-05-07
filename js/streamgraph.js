@@ -1,46 +1,46 @@
 function breakCalc(x){
 	x <= 480 ? y = 'xs' : y = 'md';
 	return y;
-	}
+}
 
-	var breakpoint = breakCalc($(window).width());
+var breakpoint = breakCalc($(window).width());
 
-	$(window).resize(function(){
+$(window).resize(function(){
 	var breakpoint = breakCalc($(window).width());
-	})
+})
 
 	// change the height of the chart depending on the breakpoint
-	function breakHeight(bp){
+function breakHeight(bp){
 	bp == 'xs' ? y = 250 : y = 500;
 	return y;
-	}
+}
 
 	// function to group by multiple properties in underscore.js
-	_.groupByMulti = function (obj, values, context) {
-		if (!values.length)
-			return obj;
-		var byFirst = _.groupBy(obj, values[0], context),
-			rest = values.slice(1);
-		for (var prop in byFirst) {
-			byFirst[prop] = _.groupByMulti(byFirst[prop], rest, context);
-		}
-		return byFirst;
-	};
+_.groupByMulti = function (obj, values, context) {
+	if (!values.length)
+		return obj;
+	var byFirst = _.groupBy(obj, values[0], context),
+		rest = values.slice(1);
+	for (var prop in byFirst) {
+		byFirst[prop] = _.groupByMulti(byFirst[prop], rest, context);
+	}
+	return byFirst;
+};
 
 	// function to decide whether to pluralize the word "award" in the tooltip
-	function awardPlural(x){
+function awardPlural(x){
 	x == 1 ? y = '次報案' : y = '次報案';
 	return y;
-	}
+}
 
 	// funciton to determine the century of the datapoint when displaying the tooltip
-	function century(x){
+function century(x){
 	x<100 ? y = '19'+x : y = '20'+(x.toString().substring(1));
 	return y;
-	}
+}
 
 	// function to ensure the tip doesn't hang off the side
-	function tipX(x){
+function tipX(x){
 	var winWidth = $(window).width();
 	var tipWidth = $('.tip').width();
 	if (breakpoint == 'xs'){
@@ -49,11 +49,13 @@ function breakCalc(x){
 		x > winWidth - tipWidth - 30 ? y = x-45-tipWidth : y = x+10;
 	}
 	return y;
-	}
+}
 
 	// function to create the chart
-	function chart(column, filterBy, groupBy) {
-
+function chart(column, filterBy, groupBy) {
+	if($('.streamgraph.place.kcg').find('svg').length) {
+		$('.streamgraph.place.kcg').html('')
+	};
 	// basic chart dimensions
 	var margin = {top: 20, right: 1, bottom: 30, left: 0};
 	var width = $('.streamgraph-wrapper').width() - margin.left - margin.right;
@@ -135,13 +137,13 @@ function breakCalc(x){
 		// generate the legend title
 		function titler(filter,group){
 
-		if (group == 'place') {
-			if (filter == 'kcg'){
-			return "報案類型";
-			} else {
-			return "Country";
+			if (group == 'place') {
+				if (filter == 'kcg'){
+				return "報案類型";
+				} else {
+				return "Country";
+				}
 			}
-		}
 
 		}
 
@@ -149,19 +151,19 @@ function breakCalc(x){
 		$('.legend').hide();
 		var legend = []
 		layers.forEach(function(d,i){
-		var obj = {};
-		if (i<7){
-			obj.key = d.key;
-			obj.color = colorrange[i];
-			legend.push(obj);
-		}
+			var obj = {};
+			if (i<7){
+				obj.key = d.key;
+				obj.color = colorrange[i];
+				legend.push(obj);
+			}
 		});
 
 		// others
 		if (layers.length>7){legend.push({key: "其他",color: "#b3b3b3"});}
 
 		legend.forEach(function(d,i){
-		$('.streamgraph.'+groupBy+'.'+filterBy+' .legend').append('<div class="item"><div class="swatch" style="background: '+d.color+'"></div>'+d.key+'</div>');
+			$('.streamgraph.'+groupBy+'.'+filterBy+' .legend').append('<div class="item"><div class="swatch" style="background: '+d.color+'"></div>'+d.key+'</div>');
 		});
 
 		$('.legend').fadeIn();
@@ -178,9 +180,9 @@ function breakCalc(x){
 		searchObj[column] = filterBy;
 
 		if (column=="none"){
-		filter=data;
+			filter=data;
 		} else {
-		filter = _.where(data,searchObj);
+			filter = _.where(data,searchObj);
 		}
 
 		var categories = _.chain(filter)
@@ -201,36 +203,36 @@ function breakCalc(x){
 		// so that the chart does not get cut off on the right side
 		for (var i = 2000;i<2025;i++){
 
-		var currYear = group[i];
+			var currYear = group[i];
 
-		// no data for a year
-		if(i === 2024){
-			currYear = Object.assign({}, group[2023]);
-			Object.keys(currYear).forEach(function(k){
-				Array.from(currYear[k]).forEach(function(h){
-					h.year = "2024";
+			// no data for a year
+			if(i === 2024){
+				currYear = Object.assign({}, group[2023]);
+				Object.keys(currYear).forEach(function(k){
+					Array.from(currYear[k]).forEach(function(h){
+						h.year = "2024";
+					});
 				});
-			});
-		} else if (currYear == undefined) {
-			currYear = {};
-		}
-
-		categories.forEach(function(area){
-
-			var obj = {};
-			if (currYear[area] == undefined){
-			// if the year does not have any in a particular category
-			obj.key = area;
-			obj.value = 0;
-			obj.date = moment(i.toString())._d;
-			} else {
-			obj.key = currYear[area][0][groupBy];
-			obj.value = currYear[area].length;
-			obj.date = moment(currYear[area][0].year)._d;
+			} else if (currYear == undefined) {
+				currYear = {};
 			}
 
-			newData.push(obj);
-		});
+			categories.forEach(function(area){
+
+				var obj = {};
+				if (currYear[area] == undefined){
+					// if the year does not have any in a particular category
+					obj.key = area;
+					obj.value = 0;
+					obj.date = moment(i.toString())._d;
+				} else {
+					obj.key = currYear[area][0][groupBy];
+					obj.value = currYear[area].length;
+					obj.date = moment(currYear[area][0].year)._d;
+				}
+
+				newData.push(obj);
+			});
 
 		}
 
@@ -257,7 +259,7 @@ function breakCalc(x){
 		// and now we're on to the data joins and appending
 		svg.selectAll(".layer")
 			.data(layers)
-		.enter().append("path")
+			.enter().append("path")
 			.attr("class", "layer")
 			.attr("d", function(d) { return area(d.values); })
 			.style("fill", function(d, i) { return z(i); });
@@ -296,13 +298,13 @@ function breakCalc(x){
 			var invertedx = x.invert(mousex);
 			var xDate = century(invertedx.getYear());
 			d.values.forEach(function(f){
-			var year = (f.date.toString()).split(' ')[3];
-			if (xDate == year){
-				tooltip
-					.style("left", tipX(mousex) +"px")
-					.html( "<div class='year'>" + (year.toString().slice(-2)) + ":00~" + (year.toString().slice(-2)) + ":59</div><div class='key'><div style='background:" + color + "' class='swatch'>&nbsp;</div>" + f.key + "</div><div class='value'>" + f.value + " " + awardPlural((f.value)) + "</div>" )
-					.style("visibility", "visible");
-			}
+				var year = (f.date.toString()).split(' ')[3];
+				if (xDate == year){
+					tooltip
+						.style("left", tipX(mousex) +"px")
+						.html( "<div class='year'>" + (year.toString().slice(-2)) + ":00~" + (year.toString().slice(-2)) + ":59</div><div class='key'><div style='background:" + color + "' class='swatch'>&nbsp;</div>" + f.key + "</div><div class='value'>" + f.value + " " + awardPlural((f.value)) + "</div>" )
+						.style("visibility", "visible");
+				}
 			});
 		})
 		.on("mouseout", function(d, i) {
@@ -375,4 +377,3 @@ function breakCalc(x){
 	var groupBy = $('.streamgraph').attr("groupBy");
 	var filterBy = $('.streamgraph').attr("filterBy");
 	$('.streamgraph').addClass(groupBy).addClass(filterBy);
-	chart(column,filterBy,groupBy);
