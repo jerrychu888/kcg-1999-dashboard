@@ -499,31 +499,31 @@ function getIconpathByWork(work){
 	var iconpath = './image/';
 	switch(work){
 		case 'work-road':
-			iconpath += 'road.svg'; break;
+			iconpath += 'road.png'; break;
 		case 'work-pipe':
-			iconpath += 'tint.svg'; break;
+			iconpath += 'tint.png'; break;
 		case 'work-light':
-			iconpath += 'lightbulb.svg'; break;
+			iconpath += 'lightbulb.png'; break;
 		case 'work-park':
-			iconpath += 'tree.svg'; break;
+			iconpath += 'tree.png'; break;
 		case 'work-traffic':
-			iconpath += 'sign.svg'; break;
+			iconpath += 'sign.png'; break;
 		case 'work-car':
-			iconpath += 'car.svg'; break;
+			iconpath += 'car.png'; break;
 		case 'work-noise':
-			iconpath += 'bullhorn.svg'; break;
+			iconpath += 'bullhorn.png'; break;
 		case 'work-animal':
-			iconpath += 'paw.svg'; break;
+			iconpath += 'paw.png'; break;
 		case 'work-view':
-			iconpath += 'seedling.svg'; break;
+			iconpath += 'seedling.png'; break;
 		case 'work-water':
-			iconpath += 'bath.svg'; break;
+			iconpath += 'bath.png'; break;
 		case 'work-electricity':
-			iconpath += 'bolt.svg'; break;
+			iconpath += 'bolt.png'; break;
 		case 'work-gas':
-			iconpath += 'industry.svg'; break;
+			iconpath += 'industry.png'; break;
 		default:
-			iconpath += 'question.svg';
+			iconpath += 'question.png';
 	}
 	return iconpath;
 }
