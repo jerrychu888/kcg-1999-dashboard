@@ -496,7 +496,7 @@ function loadYesterday(day){
 }
 
 function getIconpathByWork(work){
-	var iconpath = 'https://use.fontawesome.com/releases/v5.0.9/svgs/solid/';
+	var iconpath = './image/';
 	switch(work){
 		case 'work-road':
 			iconpath += 'road.svg'; break;
