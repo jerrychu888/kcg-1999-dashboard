@@ -29,8 +29,24 @@ $(function(){
 		$('section.' + $(this).data('to')).show().animateCss('fadeIn');
 		$(this).addClass('active').siblings().removeClass('active');
 
-		if($(this).data('to') === 'map') resetTimeline();
-		if($(this).data('to') === 'the-streamgraph') chart(column,filterBy,groupBy);
+		switch($(this).data('to')){
+			case 'dashboard':
+				$('header h1').text('1999 市政儀表板');
+				break;
+			case 'list':
+				$('header h1').text('1999 報案總覽');
+				break;
+			case 'map':
+				resetTimeline();
+				$('header h1').text('1999 報案時空分佈');
+				break;
+			case 'the-streamgraph':
+				chart(column,filterBy,groupBy);
+				$('header h1').text('1999 量化波形圖');
+				break;
+			default:
+
+		}
 	});
 
 	$('#yesterday').on('click', function(){
