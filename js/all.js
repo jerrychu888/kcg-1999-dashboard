@@ -150,7 +150,7 @@ function load(day, skipLoading = false){
 				var d = new Date(event.cre_Date);
 				var marker = new google.maps.Marker({
 					position: new google.maps.LatLng(event.lat, event.lng),
-					icon: new google.maps.MarkerImage(iconpath, null, null, null, new google.maps.Size(16, 16)),
+					icon: new google.maps.MarkerImage(iconpath, null, null, null),
 					draggable: false,
 					map: map,
 					fileNo: event.fileNo,
