@@ -477,3 +477,51 @@ footer{
 .timeline input[type=range]:focus::-ms-fill-upper {
 	background: #FF2222;
 }
+
+.fa-road{
+	color: #707068;
+}
+
+.fa-tint{
+	color: #32A9DC;
+}
+
+.fa-lightbulb{
+	color: #F6D559;
+}
+
+.fa-tree{
+	color: #0D9332;
+}
+
+.fa-sign{
+	color: #F4393E;
+}
+
+.fa-car{
+	color: #5599FF;
+}
+
+.fa-bullhorn{
+	color: #ff9200;
+}
+
+.fa-paw{
+	color: #FACB97;
+}
+
+.fa-seedling{
+	color: #32CA56;
+}
+
+.fa-bath{
+	color: #0C539A;
+}
+
+.fa-bolt{
+	color: #FCE500;
+}
+
+.fa-industry{
+	color: #D18663;
+}
