@@ -53,6 +53,8 @@ function tipX(x){
 
 	// function to create the chart
 function chart(column, filterBy, groupBy) {
+	if(!window.weeklyData) return;
+
 	if($('.streamgraph.place.kcg').find('svg').length) {
 		$('.streamgraph.place.kcg').html('')
 	};
@@ -224,11 +226,11 @@ function chart(column, filterBy, groupBy) {
 					// if the year does not have any in a particular category
 					obj.key = area;
 					obj.value = 0;
-					obj.date = moment(i.toString())._d;
+					obj.date = moment(i.toString() + '-01-01')._d;
 				} else {
 					obj.key = currYear[area][0][groupBy];
 					obj.value = currYear[area].length;
-					obj.date = moment(currYear[area][0].year)._d;
+					obj.date = moment(currYear[area][0].year + '-01-01')._d;
 				}
 
 				newData.push(obj);
@@ -241,7 +243,8 @@ function chart(column, filterBy, groupBy) {
 	}
 
 	// now we call the data, as the rest of the code is dependent upon data
-	d3.csv("data/streamgraph.csv", function(data) {
+
+	function loadTheStreamgraph(data){
 
 		// parse the data (see parsing function, above)
 		data = parse(data);
@@ -364,9 +367,11 @@ function chart(column, filterBy, groupBy) {
 		t.select('line.guide')
 		.attr('transform', 'translate(' + width + ', 0)');
 
-	});
-
 	}
+
+	loadTheStreamgraph(window.weeklyData);
+
+}
 
 	// get the various arguments from the chart div attributes
 	// if you're making one chart, this approach is unnecessary

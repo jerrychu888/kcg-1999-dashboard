@@ -10,6 +10,7 @@ var works_district = [];
 var charts = [];
 var map, mapSmall, markerEvent = [];
 var districts = ["楠梓區", "左營區", "鼓山區", "三民區", "鹽埕區", "前金區", "新興區", "苓雅區", "前鎮區", "旗津區", "小港區", "鳳山區", "大寮區", "鳥松區", "林園區", "仁武區", "大樹區", "大社區", "岡山區", "路竹區", "橋頭區", "梓官區", "彌陀區", "永安區", "燕巢區", "田寮區", "阿蓮區", "茄萣區", "湖內區", "旗山區", "美濃區", "內門區", "杉林區", "甲仙區", "六龜區", "茂林區", "桃源區", "那瑪夏區"];
+var weeklyData;
 
 var intervalTimeline;
 
@@ -120,7 +121,7 @@ function load(day, skipLoading = false){
 	}
 	$('.work').each(function(){
 		works[$(this).attr('id')] = {};
-		Array.from(charts).forEach(c => {
+		Array.from(charts).forEach(function(c){
 			c.destroy();
 		});
 	});
@@ -307,6 +308,32 @@ function load(day, skipLoading = false){
 	});
 
 	resetTimeline();
+
+	var sDate = moment().add(-7, 'day').format('YYYY-MM-DD');
+	var eDate = moment().add(-1, 'day').format('YYYY-MM-DD');
+
+	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+		var streamgraphRawData = [];
+		Array.from(data).forEach(function(event){
+			var type = getNameByCategory(getCategoryByName(event.informDesc));
+			var time = '20' + moment(event.cre_Date).format('HH');
+			streamgraphRawData.push({
+				year: time,
+				place: type,
+				type: 'kcg',
+			});
+			if(time === '2023'){
+				streamgraphRawData.push({
+					year: '2024',
+					place: type,
+					type: 'kcg',
+				});
+			}
+		});
+		window.weeklyData = streamgraphRawData;
+		$('.streamgraph-wrapper h3').text('過去 7 日報案類型');
+		if($('header h1').text() === '1999 量化波形圖') chart(column,filterBy,groupBy);
+	});
 }
 
 $('.map-filter').on('click', function(){
