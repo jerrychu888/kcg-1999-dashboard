@@ -10,7 +10,7 @@ var works_district = [];
 var charts = [];
 var map, mapSmall, markerEvent = [];
 var districts = ["楠梓區", "左營區", "鼓山區", "三民區", "鹽埕區", "前金區", "新興區", "苓雅區", "前鎮區", "旗津區", "小港區", "鳳山區", "大寮區", "鳥松區", "林園區", "仁武區", "大樹區", "大社區", "岡山區", "路竹區", "橋頭區", "梓官區", "彌陀區", "永安區", "燕巢區", "田寮區", "阿蓮區", "茄萣區", "湖內區", "旗山區", "美濃區", "內門區", "杉林區", "甲仙區", "六龜區", "茂林區", "桃源區", "那瑪夏區"];
-var weeklyData;
+var weeklyData, mapData, mapDataSmall;
 
 var intervalTimeline;
 
@@ -87,21 +87,22 @@ $(function(){
 });
 
 function initMap(){
-	mapSmall = new google.maps.Map(document.getElementById('map_small'), {
-		center: {lng: 120.5786888, lat: 22.9185024},
-		zoom: 9,
-		styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#0066ff"},{"saturation":74},{"lightness":100}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"off"},{"weight":0.6},{"saturation":-85},{"lightness":61}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"color":"#5f94ff"},{"lightness":26},{"gamma":5.86}]}],
-		disableDefaultUI: true
-	});
-	mapSmall.data.loadGeoJson('./data/kaohsiung.json');
+	mapSmall = L.map('map_small').setView([22.9185024, 120.5786888], 9);
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '<a href="https://www.openstreetmap.org/">OSM</a>',
+		maxZoom: 18,
+	}).addTo(mapSmall);
 
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lng: 120.5786888, lat: 22.9185024},
-		zoom: 10,
-		// styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#0066ff"},{"saturation":74},{"lightness":100}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"off"},{"weight":0.6},{"saturation":-85},{"lightness":61}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"color":"#5f94ff"},{"lightness":26},{"gamma":5.86}]}],
-		// disableDefaultUI: true
+	map = L.map('map').setView([22.9185024, 120.5786888], 9);
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '<a href="https://www.openstreetmap.org/">OSM</a>',
+		maxZoom: 18,
+	}).addTo(map);
+
+	$.getJSON('./data/kaohsiung.json', function(r){
+		mapDataSmall = L.geoJSON(r, {color: '#333', weight: 0.7}).addTo(mapSmall);
+		mapData = L.geoJSON(r, {color: '#333', weight: 0.7}).addTo(map);
 	});
-	map.data.loadGeoJson('./data/kaohsiung.json');
 
 	var day = moment(new Date()).format('YYYY-MM-DD');
 	$('#day').val(day);
@@ -155,7 +156,7 @@ function load(day, skipLoading = false){
 		works_district[i] = 0;
 	}
 	for(var i=0;i<markerEvent.length;i++){
-		markerEvent[i].setMap(null);
+		map.removeLayer(markerEvent[i]);
 	}
 	markerEvent = [];
 
@@ -175,23 +176,23 @@ function load(day, skipLoading = false){
 			if(event.lat && event.lng){
 				var iconpath = getIconpathByWork(work);
 				var d = new Date(event.cre_Date);
-				var marker = new google.maps.Marker({
-					position: new google.maps.LatLng(event.lat, event.lng),
-					icon: new google.maps.MarkerImage(iconpath, null, null, null),
-					draggable: false,
-					map: map,
+				var marker = L.marker([event.lat, event.lng], {
+					icon: L.icon({
+						iconUrl: iconpath,
+					}),
 					fileNo: event.fileNo,
 					time: d.getHours() * 60 + d.getMinutes(),
 					type: work,
 				});
-				marker.addListener('click', function(){
+				marker.addTo(map);
+				marker.on('click', function(){
 					$('nav ul li').get(1).click();
-					var fileNo = this.fileNo;
+					var fileNo = this.options.fileNo;
 					var target = $('#list-table').find('tr').filter(function(){
 						return $(this).html().includes(fileNo);
 					});
 					var top = target.offset().top;
-					$('html, body').stop().animate({scrollTop: top}, 500, 'swing');
+					$('html, body').stop().animate({scrollTop: top - 100}, 500, 'swing');
 					setTimeout(function(){
 						$(target).animateCss('flash')
 					}, 500);
@@ -296,37 +297,31 @@ function load(day, skipLoading = false){
 		});
 		charts.push(chart);
 
-		mapSmall.data.setStyle(function(feature){
-			var name = feature.f.T_Name;
-			var count = works_district[districts.indexOf(name)];
 
-			// var s = works_district.sort(function(a,b) { return a - b; });
+		mapDataSmall.eachLayer(function(layer){
+			var name = layer.feature.properties.T_Name;
+			var count = works_district[districts.indexOf(name)];
 
 			var percent = count / maxWorkDistrct;
 			var scale = chroma.scale(['white', '#D00000']);
 
-			feature.setProperty('isColorful', true)
-			return {
+			layer.setStyle({
 				fillColor: scale(percent).hex(),
 				fillOpacity: 0.7,
-				strokeWeight: 0.7,
-			}
+			});
 		});
-		map.data.setStyle(function(feature){
-			var name = feature.f.T_Name;
-			var count = works_district[districts.indexOf(name)];
 
-			// var s = works_district.sort(function(a,b) { return a - b; });
+		mapData.eachLayer(function(layer){
+			var name = layer.feature.properties.T_Name;
+			var count = works_district[districts.indexOf(name)];
 
 			var percent = count / maxWorkDistrct;
 			var scale = chroma.scale(['white', '#D00000']);
 
-			feature.setProperty('isColorful', true)
-			return {
+			layer.setStyle({
 				fillColor: scale(percent).hex(),
-				fillOpacity: 0.4,
-				strokeWeight: 0.7,
-			}
+				fillOpacity: 0.7,
+			});
 		});
 
 		$('#loading').hide();
@@ -341,15 +336,15 @@ $('.map-filter').on('click', function(){
 	if(markerEvent.length){
 		if($(this).data('filter') !== 'all'){
 			markerEvent.forEach(function(m){
-				m.setMap(null);
+				map.removeLayer(m);
 			});
 			var filter = $(this).data('filter');
-			markerEvent.filter(function(x){return x.type === filter}).forEach(function(m){
-				m.setMap(map);
+			markerEvent.filter(function(x){return x.options.type === filter}).forEach(function(m){
+				map.addLayer(m);
 			});
 		}else{
 			markerEvent.forEach(function(m){
-				m.setMap(map);
+				map.addLayer(m);
 			});
 		}
 	}
@@ -453,14 +448,14 @@ $('.timeline-slow').on('click', function(){
 $('.timeline input').on('change', function(){
 	var range = $(this).val();
 	markerEvent.filter(function(x){
-		return x.time <= range;
+		return x.options.time <= range;
 	}).forEach(function(m){
-		if(m.map !== map) m.setMap(map);
+		if(m.map !== map) map.addLayer(m);
 	});
 	markerEvent.filter(function(x){
-		return x.time > range;
+		return x.options.time > range;
 	}).forEach(function(m){
-		m.setMap(null);
+		map.removeLayer(m);
 	});
 	var n = $('.timeline input').val();
 	var hh = Math.floor(n / 60);
@@ -731,3 +726,5 @@ $.fn.extend({
 setInterval(function(){
 	load(moment(new Date).format('YYYY-MM-DD'), true);
 }, 60000);
+
+initMap();

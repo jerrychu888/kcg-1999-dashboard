@@ -22,7 +22,7 @@ section{
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	z-index: 99;
+	z-index: 9999;
 	background: rgba(20, 20, 20, 0.8);
 	text-align: center;
 }
@@ -295,8 +295,9 @@ footer{
 }
 
 .map-filter-container{
+	z-index: 9999;
 	position: absolute;
-	left: 7rem;
+	left: 4rem;
 	top: 8.2rem;
 }
 
@@ -363,6 +364,7 @@ footer{
 }
 
 .timeline{
+	z-index: 9999;
 	width: 80%;
 	left: 10%;
 	text-align: center;
