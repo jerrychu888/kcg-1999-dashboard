@@ -298,31 +298,35 @@ function load(day, skipLoading = false){
 		charts.push(chart);
 
 
-		mapDataSmall.eachLayer(function(layer){
-			var name = layer.feature.properties.T_Name;
-			var count = works_district[districts.indexOf(name)];
+		if(mapData){
+			mapDataSmall.eachLayer(function(layer){
+				var name = layer.feature.properties.T_Name;
+				var count = works_district[districts.indexOf(name)];
 
-			var percent = count / maxWorkDistrct;
-			var scale = chroma.scale(['white', '#D00000']);
+				var percent = count / maxWorkDistrct;
+				var scale = chroma.scale(['white', '#D00000']);
 
-			layer.setStyle({
-				fillColor: scale(percent).hex(),
-				fillOpacity: 0.7,
+				layer.setStyle({
+					fillColor: scale(percent).hex(),
+					fillOpacity: 0.7,
+				});
 			});
-		});
+		}
 
-		mapData.eachLayer(function(layer){
-			var name = layer.feature.properties.T_Name;
-			var count = works_district[districts.indexOf(name)];
+		if(mapData) {
+			mapData.eachLayer(function(layer){
+				var name = layer.feature.properties.T_Name;
+				var count = works_district[districts.indexOf(name)];
 
-			var percent = count / maxWorkDistrct;
-			var scale = chroma.scale(['white', '#D00000']);
+				var percent = count / maxWorkDistrct;
+				var scale = chroma.scale(['white', '#D00000']);
 
-			layer.setStyle({
-				fillColor: scale(percent).hex(),
-				fillOpacity: 0.7,
+				layer.setStyle({
+					fillColor: scale(percent).hex(),
+					fillOpacity: 0.7,
+				});
 			});
-		});
+		}
 
 		$('#loading').hide();
 		loadYesterday(day);
