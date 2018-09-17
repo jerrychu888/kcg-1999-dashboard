@@ -108,32 +108,6 @@ function initMap(){
 	$('#day').val(day);
 
 	load(day);
-
-	var sDate = moment().add(-7, 'day').format('YYYY-MM-DD');
-	var eDate = moment().add(-1, 'day').format('YYYY-MM-DD');
-
-	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
-		var streamgraphRawData = [];
-		Array.from(data).forEach(function(event){
-			var type = getNameByCategory(getCategoryByName(event.informDesc));
-			var time = '20' + moment(event.cre_Date).format('HH');
-			streamgraphRawData.push({
-				year: time,
-				place: type,
-				type: 'kcg',
-			});
-			if(time === '2023'){
-				streamgraphRawData.push({
-					year: '2024',
-					place: type,
-					type: 'kcg',
-				});
-			}
-		});
-		window.weeklyData = streamgraphRawData;
-		$('.streamgraph-wrapper h3').text('過去 7 日報案類型');
-		if($('header h1').text() === '1999 量化波形圖') chart(column,filterBy,groupBy);
-	});
 }
 
 function load(day, skipLoading = false){
@@ -330,6 +304,32 @@ function load(day, skipLoading = false){
 
 		$('#loading').hide();
 		loadYesterday(day);
+	});
+
+	var sDate = moment(day).add(-7, 'day').format('YYYY-MM-DD');
+	var eDate = moment(day).add(-1, 'day').format('YYYY-MM-DD');
+
+	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+		var streamgraphRawData = [];
+		Array.from(data).forEach(function(event){
+			var type = getNameByCategory(getCategoryByName(event.informDesc));
+			var time = '20' + moment(event.cre_Date).format('HH');
+			streamgraphRawData.push({
+				year: time,
+				place: type,
+				type: 'kcg',
+			});
+			if(time === '2023'){
+				streamgraphRawData.push({
+					year: '2024',
+					place: type,
+					type: 'kcg',
+				});
+			}
+		});
+		window.weeklyData = streamgraphRawData;
+		$('.streamgraph-wrapper h3').text('過去 7 日報案類型');
+		if($('header h1').text() === '1999 量化波形圖') chart(column,filterBy,groupBy);
 	});
 
 	resetTimeline();
