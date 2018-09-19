@@ -32,18 +32,18 @@ $(function(){
 
 		switch($(this).data('to')){
 			case 'dashboard':
-				$('header h1').text('1999 市政儀表板');
+				$('header h1').text('高雄市 1999 市政儀表板');
 				break;
 			case 'list':
-				$('header h1').text('1999 報案總覽');
+				$('header h1').text('高雄市 1999 報案總覽');
 				break;
 			case 'map':
 				resetTimeline();
-				$('header h1').text('1999 報案時空分佈');
+				$('header h1').text('高雄市 1999 報案時空分佈');
 				break;
 			case 'the-streamgraph':
 				chart(column,filterBy,groupBy);
-				$('header h1').text('1999 量化波形圖');
+				$('header h1').text('高雄市 1999 量化波形圖');
 				break;
 			default:
 
@@ -132,7 +132,7 @@ function initMap(){
 		});
 		window.weeklyData = streamgraphRawData;
 		$('.streamgraph-wrapper h3').text('過去 7 日報案類型');
-		if($('header h1').text() === '1999 量化波形圖') chart(column,filterBy,groupBy);
+		if($('header h1').text() === '高雄市 1999 量化波形圖') chart(column,filterBy,groupBy);
 	});
 }
 
