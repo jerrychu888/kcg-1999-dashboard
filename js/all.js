@@ -1,8 +1,4 @@
-if (location.protocol !== 'https:' && location.hostname !== 'localhost'){
-	location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-}
-
-var API_URL = 'https://api-proxy.noob.tw/https://solhistory.kcg.gov.tw/his-open1999/api/case';
+var API_URL = '/api/solhistory.kcg.gov.tw/his-open1999/api/case';
 
 var works = {};
 var works_time = {};
