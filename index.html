@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta http-equiv="X-UA-Compatible" content="ie=EmulateIE9">
 	<title>高雄市 1999 市政儀表板</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
@@ -51,7 +51,16 @@
 			"description": "高雄市 1999 市政儀表板：用 Open1999 開放資料做視覺化"
 		}
 	</script>
-
+	<!--[if IE]>
+	<script type="text/javascript">
+	window.location = "unsupported.html';
+	</script>
+	<![endif]-->
+	<script>
+		if(window.navigator.userAgent.match(/(MSIE|Trident)/)){
+			window.location = 'unsupported.html';
+		}
+	</script>
 </head>
 <body>
 	<header>
