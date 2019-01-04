@@ -1,4 +1,4 @@
-var API_URL = '/api/solhistory.kcg.gov.tw/his-open1999/api/case';
+var API_URL = 'https://soweb.kcg.gov.tw/open1999/ServiceRequestsQuery.asmx/ServiceRequestsQuery';
 
 var works = {};
 var works_time = {};
@@ -108,7 +108,7 @@ function initMap(){
 	var sDate = moment().add(-7, 'day').format('YYYY-MM-DD');
 	var eDate = moment().add(-1, 'day').format('YYYY-MM-DD');
 
-	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+	LOAD_2018_2019(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
 		var streamgraphRawData = [];
 		Array.from(data).forEach(function(event){
 			var type = getNameByCategory(getCategoryByName(event.informDesc));
@@ -156,7 +156,7 @@ function load(day, skipLoading = false){
 	}
 	markerEvent = [];
 
-	$.getJSON(API_URL + '?date=' + day, function(res){
+	LOAD_2018_2019(API_URL + '?startDate=' + day + '&endDate=' + day, function(res){
 		var maxWorkDistrct = 0;
 		var workAchiveCount = 0;
 		var workAchiveProCount = 0;
@@ -331,7 +331,7 @@ function load(day, skipLoading = false){
 	var sDate = moment(day).add(-7, 'day').format('YYYY-MM-DD');
 	var eDate = moment(day).add(-1, 'day').format('YYYY-MM-DD');
 
-	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+	LOAD_2018_2019(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
 		var streamgraphRawData = [];
 		Array.from(data).forEach(function(event){
 			var type = getNameByCategory(getCategoryByName(event.informDesc));
@@ -498,7 +498,7 @@ function loadYesterday(day){
 	var works_yesterday = {};
 	var works_time_yesterday = {};
 
-	$.getJSON(API_URL + '?date=' + day, function(res){
+	LOAD_2018_2019(API_URL + '?startDate=' + day + '&endDate=' + day, function(res){
 		if(res.length){
 			var maxWorkDistrct = 0;
 			var workAchiveCount = 0;
@@ -702,6 +702,8 @@ function getCategoryByName(name){
 		case '欣高-孔蓋鬆動':
 		case '欣高-路面填補不實':
 			return 'work-gas'
+		default:
+			return getCategoryByName2019(name)
 	}
 }
 
@@ -754,3 +756,147 @@ setInterval(function(){
 }, 60000);
 
 initMap();
+
+function LOAD_2018_2019(URL, callback) {
+	var startDate = moment(URL.match(/([0-9]{4})-([0-9]{2})-([0-9]{2})/)[0]).unix();
+
+	URL = URL.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2})/g, '$1$2$3');
+	$.getJSON(URL, function(data){
+		var newData = data.map(function(x){
+			var d = {};
+			Object.keys(x).forEach(function(key, i){
+				var newKey = key.charAt(0).toLowerCase() + key.slice(1);
+				newKey = newKey.slice(0, -1);
+				switch(newKey){
+					case 'cre_Date':
+					case 'save_Date':
+					case 'close_Date':
+						d[newKey] = OLDDATE_TO_NEWDATE(x[key]);
+						break;
+					default:
+						d[newKey] = x[key];
+				}
+			});
+			return d;
+		});
+
+		newData = newData.filter(function(event){
+			return (moment(event.cre_Date).unix() > startDate);
+		});
+		console.log(newData)
+		callback(newData);
+	});
+}
+
+function OLDDATE_TO_NEWDATE(oldDate){
+	oldDate = oldDate.trim();
+	if(oldDate === '') return null;
+	var dates = oldDate.split(' ');
+
+	var date = moment(new Date(dates[0])).format('YYYY-MM-DD');
+	var hour = ~~dates[2].split(':')[0];
+	if(dates[1] === '下午' && hour !== 12) hour += 12;
+	if(hour === 12 && dates[1] === '上午') hour -= 12;
+	var minAndSec = dates[2].split(':').slice(1).join(':');
+	if(hour < 10) hour = '0' + hour;
+	newDate = date + 'T' + hour + ':' +  minAndSec;
+	return newDate;
+}
+
+function getCategoryByName2019(name){
+	switch(name){
+		case '道路挖掘_人孔蓋': return 'work-road';
+		case '道路挖掘_管線工程': return 'work-road';
+		case '共同管道_寬頻管道管理': return 'work-road';
+		case '路燈_維護管理（立即處理）': return 'work-light';
+		case '道路_道路管理': return 'work-road';
+		case '道路_路面不平（立即處理）': return 'work-road';
+		case '道路_安全島雜草叢生': return 'work-park';
+		case '公園、濕地及綠地_維護管理（立即處理）': return 'work-park';
+		case '行道樹、人行道_行道樹維護管理（立即處理）': return 'work-park';
+		case '行道樹、人行道_人行道維護管理(立即處理)': return 'work-park';
+		case '空氣污染_冒煙或排煙': return 'work-noise';
+		case '空氣污染_怠速運轉': return 'work-noise';
+		case '空氣污染_揚塵': return 'work-noise';
+		case '空氣污染_其他': return 'work-noise';
+		case '異味污染_製程(生產過程)': return 'work-noise';
+		case '異味污染_廢污水': return 'work-noise';
+		case '異味污染_廢棄物或資源回收': return 'work-noise';
+		case '異味污染_有機氣體(含溶劑)或化學物質': return 'work-noise';
+		case '異味污染_廚餘': return 'work-noise';
+		case '異味污染_油煙': return 'work-noise';
+		case '異味污染_動物': return 'work-noise';
+		case '異味污染_施肥': return 'work-noise';
+		case '異味污染_沼氣(瓦斯)': return 'work-gas';
+		case '異味污染_露天燃燒': return 'work-noise';
+		case '異味污染_燃燒稻草': return 'work-noise';
+		case '異味污染_燃燒行為_燒香或紙錢': return 'work-noise';
+		case '異味污染_不明': return 'work-gas';
+		case '異味污染_其他': return 'work-gas';
+		case '噪音_擴音設備': return 'work-noise';
+		case '噪音_固定動力': return 'work-noise';
+		case '噪音_動力機具': return 'work-noise';
+		case '噪音_裝潢作業': return 'work-noise';
+		case '噪音_冷氣、空調設備': return 'work-noise';
+		case '噪音_民俗噪音': return 'work-noise';
+		case '噪音_機電設備': return 'work-noise';
+		case '噪音_其他': return 'work-noise';
+		case '水污染_未處理排放': return 'work-noise';
+		case '水污染_滲出水': return 'work-pipe';
+		case '水污染_逕流污水': return 'work-noise';
+		case '水污染_繞流與暗管': return 'work-pipe';
+		case '水污染_河川汙染': return 'work-noise';
+		case '水污染_其他': return 'work-pipe';
+		case '環境衛生_動物死屍': return 'work-animal';
+		case '環境衛生_堆放垃圾': return 'work-noise';
+		case '環境衛生_街道清理、污染': return 'work-noise';
+		case '環境衛生_環境髒亂': return 'work-noise';
+		case '環境衛生_張貼廣告物': return 'work-noise';
+		case '道路交通設施_號誌維護': return 'work-traffic';
+		case '其他警政類_妨害安寧': return 'work-car';
+		case '其他警政類_急迫危害立即排除': return 'work-noise';
+		case '交通維持_違規停車': return 'work-car';
+		case '交通維持_佔用道路': return 'work-car';
+		case '交通維持_交通疏導': return 'work-car';
+		case '動物防疫保護_攻擊性流浪犬捕捉': return 'work-animal';
+		case '動物防疫保護_動物(犬貓)救傷': return 'work-animal';
+		case '動物防疫保護_動物(犬貓)救援': return 'work-animal';
+		case '排水問題_積水': return 'work-water';
+		case '溝蓋(渠)問題_溝蓋維護': return 'work-road';
+		case '污水問題_污水管線維護': return 'work-pipe';
+		case '風景區管理_設施損壞有立即危險者': return 'work-view';
+		case '風景區管理_環境髒亂': return 'work-view';
+		case '台電業務_人孔、溝蓋鬆動': return 'work-road';
+		case '台電業務_路面塌陷': return 'work-road';
+		case '台電業務_變壓器有聲音': return 'work-electricity';
+		case '台電業務_漏電': return 'work-electricity';
+		case '台電業務_停電': return 'work-electricity';
+		case '台電業務_路面填補不實': return 'work-road';
+		case '台電業務_電線掉落': return 'work-electricity';
+		case '自來水業務_消防栓、漏水': return 'work-water';
+		case '自來水業務_停水': return 'work-water';
+		case '自來水業務_檢修管線': return 'work-water';
+		case '公園、濕地及綠地_維護管理': return 'work-park';
+		case '公園、濕地及綠地_違規使用': return 'work-park';
+		case '共同管道_共同管道管理': return 'work-pipe';
+		case '其他水利類_其他水利類': return 'work-water';
+		case '其他警政類_其他警政類業務': return 'work-noise';
+		case '其他警政類_警紀督察': return 'work-traffic';
+		case '動物防疫保護_其他動物防疫保護': return 'work-animal';
+		case '水利工程施工問題_未設置安全設施': return 'work-water';
+		case '污水問題_污水用戶接管': return 'work-pipe';
+		case '溝蓋(渠)問題_溝渠維護': return 'work-road';
+		case '環境衛生_其他': return 'work-noise';
+		case '行道樹、人行道_人行道維護管理': return 'work-park';
+		case '路燈_維護管理': return 'work-light';
+		case '道路_路面維護': return 'work-road';
+		case '道路交通設施_號誌新設或調整': return 'work-traffic';
+		case '道路挖掘_其他建議事項': return 'work-road';
+		case '風景區管理_設施增設': return 'work-view';
+		case '風景區管理_設施損壞': return 'work-view';
+		case '中華電信_路面填補不實': return 'work-road';
+		default:
+			console.log(name)
+			return '其他';
+	}
+}
