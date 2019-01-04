@@ -1,4 +1,4 @@
-var API_URL = '/api/solhistory.kcg.gov.tw/his-open1999/api/case';
+var API_URL = 'https://soweb.kcg.gov.tw/open1999/ServiceRequestsQuery.asmx/ServiceRequestsQuery';
 
 var works = {};
 var works_time = {};
@@ -108,7 +108,7 @@ function initMap(){
 	var sDate = moment().add(-7, 'day').format('YYYY-MM-DD');
 	var eDate = moment().add(-1, 'day').format('YYYY-MM-DD');
 
-	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+	LOAD_2018_2019(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
 		var streamgraphRawData = [];
 		Array.from(data).forEach(function(event){
 			var type = getNameByCategory(getCategoryByName(event.informDesc));
@@ -156,7 +156,7 @@ function load(day, skipLoading = false){
 	}
 	markerEvent = [];
 
-	$.getJSON(API_URL + '?date=' + day, function(res){
+	LOAD_2018_2019(API_URL + '?startDate=' + day + '&endDate=' + day, function(res){
 		var maxWorkDistrct = 0;
 		var workAchiveCount = 0;
 		var workAchiveProCount = 0;
@@ -331,7 +331,7 @@ function load(day, skipLoading = false){
 	var sDate = moment(day).add(-7, 'day').format('YYYY-MM-DD');
 	var eDate = moment(day).add(-1, 'day').format('YYYY-MM-DD');
 
-	$.getJSON(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+	LOAD_2018_2019(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
 		var streamgraphRawData = [];
 		Array.from(data).forEach(function(event){
 			var type = getNameByCategory(getCategoryByName(event.informDesc));
@@ -498,7 +498,7 @@ function loadYesterday(day){
 	var works_yesterday = {};
 	var works_time_yesterday = {};
 
-	$.getJSON(API_URL + '?date=' + day, function(res){
+	LOAD_2018_2019(API_URL + '?startDate=' + day + '&endDate=' + day, function(res){
 		if(res.length){
 			var maxWorkDistrct = 0;
 			var workAchiveCount = 0;
@@ -754,3 +754,42 @@ setInterval(function(){
 }, 60000);
 
 initMap();
+
+function LOAD_2018_2019(URL, callback) {
+	URL = URL.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2})/g, '$1$2$3');
+	$.getJSON(URL, function(data){
+		var newData = data.map(function(x){
+			var d = {};
+			Object.keys(x).forEach(function(key, i){
+				var newKey = key.charAt(0).toLowerCase() + key.slice(1);
+				newKey = newKey.slice(0, -1);
+				switch(newKey){
+					case 'cre_Date':
+					case 'save_Date':
+					case 'close_Date':
+						d[newKey] = OLDDATE_TO_NEWDATE(x[key]);
+						break;
+					default:
+						d[newKey] = x[key];
+				}
+			});
+			// console.log(d);
+			return d;
+		});
+		callback(newData);
+	});
+}
+
+function OLDDATE_TO_NEWDATE(oldDate){
+	oldDate = oldDate.trim();
+	if(oldDate === '') return null;
+	var dates = oldDate.split(' ');
+
+	var date = moment(new Date(dates[0])).format('YYYY-MM-DD');
+	var hour = ~~dates[2].split(':')[0];
+	if(dates[1] === '下午') hour += 12;
+	var minAndSec = dates[2].split(':').slice(1).join(':');
+	if(hour < 10) hour = '0' + hour;
+	newDate = date + 'T' + hour + ':' +  minAndSec;
+	return newDate;
+}
