@@ -80,6 +80,8 @@ $(function(){
 			easing: "swing"
 		});
 	});
+
+	$('#thisyear').text(moment().format('YYYY'));
 });
 
 function initMap(){
