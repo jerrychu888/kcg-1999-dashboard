@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
 	<link rel="stylesheet" href="css/streamgraph.css">
+	<link rel="stylesheet" href="css/daterangepicker.css">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="shortcut icon" href="/favicon.ico" />
 	<link rel="icon" type="image/png" href="/favicon.png" />
@@ -82,16 +83,16 @@
 		</div>
 	</div>
 	<div class="date">
-		<div class="dib" id="yesterday">
+		<!-- <div class="dib" id="yesterday">
 			<i class="fas fa-angle-double-left"></i>
-		</div>
+		</div> -->
 		<div class="dib" id="today">
 			<i class="fas fa-calendar"></i>
 		</div>
-		<input class="unstyled" type="date" id="day" placeholder="2018-05-21"/>
-		<div class="dib" id="tomorrow">
+		<input class="unstyled" type="text" id="day" autocomplete="off" placeholder="2018-05-21"/>
+		<!-- <div class="dib" id="tomorrow">
 			<i class="fas fa-angle-double-right"></i>
-		</div>
+		</div> -->
 	</div>
 	<section class="dashboard">
 		<div class="work" id="work-road">
@@ -216,15 +217,15 @@
 			<canvas></canvas>
 		</div>
 		<div class="card " id="count-donut">
-			<div class="work-title"><i class="fas fa-circle-notch"></i> 今日案件分類</div>
+			<div class="work-title"><i class="fas fa-circle-notch"></i> 區間案件分類</div>
 			<canvas></canvas>
 		</div>
 		<div class="card" id="count-achivement">
-			<div class="work-title"><i class="far fa-check-square"></i> 今日案件處理完成率</div>
+			<div class="work-title"><i class="far fa-check-square"></i> 區間案件處理完成率</div>
 			<div class="work-count work-count-down">0%</div>
 		</div>
 		<div class="card" id="count-achivement-pro">
-			<div class="work-title"><i class="fas fa-check-square"></i> 今日案件解除管制率</div>
+			<div class="work-title"><i class="fas fa-check-square"></i> 區間案件解除管制率</div>
 			<div class="work-count work-count-down">0%</div>
 		</div>
 		<div class="card card-blue" id="count-achivement-time-pro">
@@ -312,6 +313,7 @@
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 	<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+	<script src="js/daterangepicker.js"></script>
 	<script src="js/all.js"></script>
 	<script src="js/streamgraph.js"></script>
 </body>

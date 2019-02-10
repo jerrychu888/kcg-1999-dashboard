@@ -11,12 +11,12 @@ var weeklyData, mapData, mapDataSmall;
 var intervalTimeline;
 
 $(function(){
-	$('#day').on('change', function(){
-		if($(this).val()){
-			var day = moment($(this).val()).format('YYYY-MM-DD');
-			load(day);
-		}
-	});
+	// $('#day').on('change', function(){
+	// 	if($(this).val()){
+	// 		var day = moment($(this).val()).format('YYYY-MM-DD');
+	// 		load(day);
+	// 	}
+	// });
 
 	$('section').hide();
 	$('section.dashboard').show().animateCss('fadeIn');
@@ -46,22 +46,26 @@ $(function(){
 		}
 	});
 
-	$('#yesterday').on('click', function(){
-		var day = moment($('#day').val()).add(-1, 'days').format('YYYY-MM-DD')
-		$('#day').val(day);
-		load(day);
-	});
+	// $('#yesterday').on('click', function(){
+	// 	var day = moment($('#day').val()).add(-1, 'days').format('YYYY-MM-DD')
+	// 	$('#day').val(day);
+	// 	load(day);
+	// });
 
-	$('#tomorrow').on('click', function(){
-		var day = moment($('#day').val()).add(1, 'days').format('YYYY-MM-DD');
-		$('#day').val(day);
-		load(day);
-	});
+	// $('#tomorrow').on('click', function(){
+	// 	var day = moment($('#day').val()).add(1, 'days').format('YYYY-MM-DD');
+	// 	$('#day').val(day);
+	// 	load(day);
+	// });
 
 	$('#today').on('click', function(){
-		var day = moment(new Date()).format('YYYY-MM-DD');
-		$('#day').val(day);
-		load(day);
+		// var day = moment(new Date()).format('YYYY-MM-DD');
+		// $('#day').val(day);
+		// load(day);
+		var d = moment(new Date());
+		$('#day').data('daterangepicker').setStartDate(d);
+		$('#day').data('daterangepicker').setEndDate(d);
+		load(d.format('YYYY-MM-DD'), d.format('YYYY-MM-DD'));
 	});
 
 	$(document).scroll(function() {
@@ -82,6 +86,21 @@ $(function(){
 	});
 
 	$('#thisyear').text(moment().format('YYYY'));
+
+	$('#day').daterangepicker({
+		// minDate: moment(new Date()).add(-10, 'days'),
+		maxDate: moment(new Date()),
+		startDate: moment(new Date()),
+		endDate: moment(new Date()),
+		maxSpan: {
+			days: 10,
+		},
+		opens: 'left',
+	}, function(d){
+		var startDate = $('#day').data('daterangepicker').startDate.format('YYYY-MM-DD');
+		var endDate = $('#day').data('daterangepicker').endDate.format('YYYY-MM-DD');
+		load(startDate, endDate)
+	});
 });
 
 function initMap(){
@@ -102,15 +121,12 @@ function initMap(){
 		mapData = L.geoJSON(r, {color: '#333', weight: 0.7}).addTo(map);
 	});
 
-	var day = moment(new Date()).format('YYYY-MM-DD');
-	$('#day').val(day);
+	// var day = moment(new Date()).format('YYYY-MM-DD');
+	var today = moment(new Date()).format('YYYY-MM-DD');
 
-	load(day);
+	load(today, today);
 
-	var sDate = moment().add(-7, 'day').format('YYYY-MM-DD');
-	var eDate = moment().add(-1, 'day').format('YYYY-MM-DD');
-
-	LOAD_2018_2019(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
+	LOAD_2018_2019(API_URL + '?startDate=' + today + '&endDate=' + today, function(data){
 		var streamgraphRawData = [];
 		Array.from(data).forEach(function(event){
 			var type = getNameByCategory(getCategoryByName(event.informDesc));
@@ -129,19 +145,19 @@ function initMap(){
 			}
 		});
 		window.weeklyData = streamgraphRawData;
-		$('.streamgraph-wrapper h3').text('過去 7 日報案類型');
+		$('.streamgraph-wrapper h3').text(today + '~' + today + ' 報案資料');
 		if($('header h1').text() === '高雄市 1999 量化波形圖') chart(column,filterBy,groupBy);
 	});
 }
 
-function load(day, skipLoading = false){
+function load(startDate, endDate, skipLoading = false){
 	works_time = {};
 	if(skipLoading !== true){
 		$('#loading').show();
 	}else{
 		if(
 			moment(new Date).format('YYYY-MM-DD') !==
-			moment($('#day').val()).format('YYYY-MM-DD')
+			moment($('#day').data('daterangepicker').startDate).format('YYYY-MM-DD')
 		) return;
 	}
 	$('.work').each(function(){
@@ -158,11 +174,12 @@ function load(day, skipLoading = false){
 	}
 	markerEvent = [];
 
-	LOAD_2018_2019(API_URL + '?startDate=' + day + '&endDate=' + day, function(res){
-		var maxWorkDistrct = 0;
-		var workAchiveCount = 0;
-		var workAchiveProCount = 0;
-		var workAchiveProTime = 0;
+	var maxWorkDistrct = 0;
+	var workAchiveCount = 0;
+	var workAchiveProCount = 0;
+	var workAchiveProTime = 0;
+
+	LOAD_2018_2019(API_URL + '?startDate=' + startDate + '&endDate=' + endDate, function(res){
 
 		$('#list-table').find('tbody').html('')
 		$('#count-today').find('.work-count').text(~~res.length);
@@ -225,7 +242,7 @@ function load(day, skipLoading = false){
 				'<td style="border-left-color: '+ color +'">' + event.unitName + '</td>' +
 				'<td>' + event.zipName + '</td>' +
 				'<td>' + desc + '</td>' +
-				'<td>' + moment(event.cre_Date).format('HH:mm') + '</td>' +
+				'<td>' + moment(event.cre_Date).format('MM/DD HH:mm') + '</td>' +
 				'</tr>'
 			);
 
@@ -295,6 +312,27 @@ function load(day, skipLoading = false){
 		});
 		charts.push(chart);
 
+		var streamgraphRawData = [];
+		Array.from(res).forEach(function(event){
+			var type = getNameByCategory(getCategoryByName(event.informDesc));
+			var time = '20' + moment(event.cre_Date).format('HH');
+			streamgraphRawData.push({
+				year: time,
+				place: type,
+				type: 'kcg',
+			});
+			if(time === '2023'){
+				streamgraphRawData.push({
+					year: '2024',
+					place: type,
+					type: 'kcg',
+				});
+			}
+		});
+		window.weeklyData = streamgraphRawData;
+		$('.streamgraph-wrapper h3').text(startDate + '~' + endDate + ' 報案資料');
+		if($('header h1').text() === '1999 量化波形圖') chart(column,filterBy,groupBy);
+
 
 		if(mapData){
 			mapDataSmall.eachLayer(function(layer){
@@ -327,33 +365,19 @@ function load(day, skipLoading = false){
 		}
 
 		$('#loading').hide();
-		loadYesterday(day);
-	});
+		if(moment(endDate).diff(moment(startDate)) === 0) {
+			var yesterday = moment(startDate).add(-1, 'days').format('YYYY-MM-DD');
+			loadYesterday(yesterday);
+			$('.yesterday').show();
+			$('.timeline').show();
+		} else {
+			$('.yesterday').hide();
+			$('.timeline').hide();
+		}
 
-	var sDate = moment(day).add(-7, 'day').format('YYYY-MM-DD');
-	var eDate = moment(day).add(-1, 'day').format('YYYY-MM-DD');
-
-	LOAD_2018_2019(API_URL + '?startDate=' + sDate + '&endDate=' + eDate, function(data){
-		var streamgraphRawData = [];
-		Array.from(data).forEach(function(event){
-			var type = getNameByCategory(getCategoryByName(event.informDesc));
-			var time = '20' + moment(event.cre_Date).format('HH');
-			streamgraphRawData.push({
-				year: time,
-				place: type,
-				type: 'kcg',
-			});
-			if(time === '2023'){
-				streamgraphRawData.push({
-					year: '2024',
-					place: type,
-					type: 'kcg',
-				});
-			}
-		});
-		window.weeklyData = streamgraphRawData;
-		$('.streamgraph-wrapper h3').text('過去 7 日報案類型');
-		if($('header h1').text() === '1999 量化波形圖') chart(column,filterBy,groupBy);
+		if(!skipLoading && $('h1').text().endsWith('量化波形圖')) {
+			$($('nav ul li')[0]).click();
+		}
 	});
 
 	resetTimeline();
@@ -754,8 +778,8 @@ $.fn.extend({
 });
 
 setInterval(function(){
-	load(moment(new Date).format('YYYY-MM-DD'), true);
-}, 60000);
+	load(moment(new Date).format('YYYY-MM-DD'), moment(new Date).format('YYYY-MM-DD'), true);
+}, 5000);
 
 initMap();
 
@@ -785,7 +809,6 @@ function LOAD_2018_2019(URL, callback) {
 		newData = newData.filter(function(event){
 			return (moment(event.cre_Date).unix() > startDate);
 		});
-		console.log(newData)
 		callback(newData);
 	});
 }
@@ -898,7 +921,6 @@ function getCategoryByName2019(name){
 		case '風景區管理_設施損壞': return 'work-view';
 		case '中華電信_路面填補不實': return 'work-road';
 		default:
-			console.log(name)
 			return '其他';
 	}
 }
