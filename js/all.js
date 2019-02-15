@@ -93,7 +93,7 @@ $(function(){
 		startDate: moment(new Date()),
 		endDate: moment(new Date()),
 		maxSpan: {
-			days: 10,
+			months: 2,
 		},
 		opens: 'left',
 	}, function(d){
