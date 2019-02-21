@@ -779,7 +779,7 @@ $.fn.extend({
 
 setInterval(function(){
 	load(moment(new Date).format('YYYY-MM-DD'), moment(new Date).format('YYYY-MM-DD'), true);
-}, 5000);
+}, 60000);
 
 initMap();
 
